@@ -26,3 +26,11 @@ export const getDate = () => {
   });
   return formatted;
 }
+export const getStringFromDate = (date : Date) => {
+// todo:
+}
+
+export const getDateFromString = (s : string) => {
+  const [year, month, day] = s.split('-').map(Number);
+  return new Date(year, month - 1, day); 
+}

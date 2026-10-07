@@ -10,9 +10,9 @@
 .container {
     display: flex;
     width: 100%;
-    padding: 3rem;
+    padding: 2rem;
     flex-direction: column;
-    gap: 3rem;
+    gap: 2rem;
     background-color: rgb(247, 244, 244);
 }
 

@@ -8,6 +8,7 @@ import {
   CardContent,
   CardDescription,
   CardFooter,
+  CardAction,
 } from "@/components/ui/card";
 import {
   ButtonGroup,
@@ -16,9 +17,11 @@ import {
 } from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
+import TransactionTable from "@/components/TransactionTable/TransactionTable";
+
 
 const Dashboard = () => {
-  const { user } = useAuth();
+  const { user, transactions } = useAuth();
 
   return (
     <div className={styles.container}>
@@ -54,6 +57,17 @@ const Dashboard = () => {
               </div>
             </CardContent>
           </Card>
+        </CardContent>
+      </Card>
+      <Card>
+        <CardHeader>
+          <CardTitle>Recent Transactions</CardTitle>
+          <CardAction>
+            <Button variant="ghost">See All 🡢</Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <TransactionTable transactions={transactions}/>
         </CardContent>
       </Card>
     </div>

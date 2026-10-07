@@ -8,7 +8,7 @@ interface AuthContextType {
   users: User[];
   setUsers: React.Dispatch<User[]>;
   transactions: Transaction[];
-  setTransactions: React.Dispatch<Transaction[]>;
+  setAllTransactions: React.Dispatch<Transaction[]>;
   signup: (firstName: string, lastName: string, email: string, username: string, password: string) => boolean;
   isLoggedIn: boolean;
 }

@@ -9,7 +9,24 @@
       "password": "a",
       "balance": 856.43,
       "accountNumber": "4000329380192547"
+    },
+        {
+      "id": 1,
+      "firstName": "Jane",
+      "lastName": "Adams",
+      "username": "s",
+      "email": "janeadams@gmail.com",
+      "password": "s",
+      "balance": 500.29,
+      "accountNumber": "4000329380191984"
     }
   ],
-  "transactions": [{ "type": "DEPOSIT", "amount": 100, "from": null, "to": 0, "timestamp": "10-06-26 10:11:49 UTC" }]
+  "transactions": [{ "id": 0, "type": "DEPOSIT", "amount": 100, "from": null, "to": 0, "date": "2026-10-07" },
+{ "id": 0, "type": "DEPOSIT", "amount": 100.00, "from": null, "to": 0, "date": "2026-10-02" },
+{ "id": 0, "type": "DEPOSIT", "amount": 50.00, "from": null, "to": 1, "date": "2026-10-02" },
+{ "id": 1, "type": "WITHDRAWAL", "amount": 10.26, "from": 0, "to": null, "date": "2026-10-03" },
+{ "id": 2, "type": "WITHDRAWAL", "amount": 34.01, "from": 0, "to": 0, "date": "2026-10-03" },
+{ "id": 3, "type": "TRANSFER", "amount": 228.00, "from": 0, "to": 1, "date": "2026-10-05" },
+{ "id": 4, "type": "TRANSFER", "amount": 18.00, "from": 1, "to": 0, "date": "2026-10-02" },
+{ "id": 5, "type": "DEPOSIT", "amount": 15.45, "from": null, "to": 1, "date": "2026-10-01" }]
 }

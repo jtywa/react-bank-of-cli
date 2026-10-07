@@ -10,11 +10,12 @@ export type User = {
 };
 
 export interface Transaction {
+  id: number;
   type: string;
   amount: number;
   from: number | null;
   to: number | null;
-  timestamp: string;
+  date: string;
 }
 
 export interface DatabaseSchema {

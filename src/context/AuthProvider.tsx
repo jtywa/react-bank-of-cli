@@ -4,11 +4,17 @@ import type { User, Transaction } from "@/types/Types";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { generateCardNumber } from "@/utils/utils";
+import { useMemo } from "react";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>(db.users);
-  const [transactions, setTransactions] = useState<Transaction[]>(db.transactions);
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>(db.transactions);
+
+  const transactions = useMemo(
+    () => (user ? allTransactions.filter((t) => t.from === user.id || t.to === user.id) : []),
+    [allTransactions, user]
+  );
 
   const login = (username: string, password: string) => {
     const foundUser = users.find((u: User) => u.username === username && u.password === password);
@@ -49,7 +55,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, signup, users, setUsers, transactions, setTransactions, isLoggedIn: !!user }}
+      value={{ user, login, logout, signup, users, setUsers, transactions, setAllTransactions, isLoggedIn: !!user }}
     >
       {children}
     </AuthContext.Provider>
