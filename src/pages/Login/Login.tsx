@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
-
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useState } from "react";
 
 const Login = () => {
@@ -15,28 +15,44 @@ const Login = () => {
   const [email, setEmail] = useState<string>("");
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
+  const [loginFailed, setLoginFailed] = useState<boolean>(false);
+  const [signupFailed, setSignupFailed] = useState<boolean>(false);
 
   const { login, signup } = useAuth();
 
   function handleSubmitSignIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
-    if (!username || !password) return;
-    login(username, password);
+    if (!username || !password) return; //show error
+    const success = login(username, password);
+    if (!success) setLoginFailed(true);
   }
 
   const handleSubmitSignUp = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     // return if any fields empty or pws not matching
-    signup(firstName, lastName, email, username, password);
+    const success = signup(firstName, lastName, email, username, password);
+    if (!success) setSignupFailed(true);
   };
 
   const handleFormSwap = () => {
+    clearAllFields();
     setIsSigningUp(!isSigningUp);
+  };
+
+  const clearAllFields = () => {
+    setLoginFailed(false);
+    setSignupFailed(false);
+    setUsername("");
+    setPassword("");
+    setEmail("");
+    setFirstName("");
+    setLastName("");
+    setConfirmPassword("");
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
-      {isSigningUp ? (
+      {!isSigningUp ? (
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-center">Sign in to Bank of CLI</CardTitle>
@@ -73,6 +89,11 @@ const Login = () => {
                 </div>
               </div>
             </form>
+            {loginFailed && (
+              <Alert className="border-none px-0" variant="destructive">
+                <AlertTitle>Login Failed: Username or password incorrect</AlertTitle>
+              </Alert>
+            )}
           </CardContent>
 
           <CardFooter className="flex-col gap-4">
@@ -179,6 +200,11 @@ const Login = () => {
                 </div>
               </div>
             </form>
+            {signupFailed && (
+              <Alert className="border-none px-0" variant="destructive">
+                <AlertTitle>Signup Failed: Please review your information</AlertTitle>
+              </Alert>
+            )}
           </CardContent>
 
           <CardFooter className="flex-col gap-4">
@@ -199,3 +225,5 @@ const Login = () => {
   );
 };
 export default Login;
+
+//todo: have to click signup twice to get it to work for some reason?

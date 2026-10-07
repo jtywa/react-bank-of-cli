@@ -3,8 +3,7 @@ import db from "@/data/db.json";
 import type { User, Transaction } from "@/types/Types";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-import { generateCardNumber, isValidEmail, isValidPass } from "@/utils/utils";
-import type { DatabaseSchema } from "@/types/Types";
+import { generateCardNumber } from "@/utils/utils";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -27,7 +26,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const signup = (firstName: string, lastName: string, email: string, username: string, password: string) => {
     console.log("ran signup");
     const userExists = users.find((u: User) => u.username === username);
-    if (userExists) throw new Error("User already exists");
+    if (userExists) return false;
     // if (!isValidEmail(email)) throw new Error("Invalid email"); //todo: something wrong here
     // if (!isValidPass(password)) throw new Error("Invalid Password"); //todoL this doesn't work either
     // if (!isValidName(firstName) || !isValidName(lastName)) return; // throw invalid name error
@@ -45,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
     setUsers((prev: User[]) => [...prev, newUser]);
 
-    console.log(users);
+    return true;
   };
 
   return (
