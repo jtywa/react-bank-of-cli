@@ -7,18 +7,11 @@ import {
   CardTitle,
   CardContent,
   CardDescription,
-  CardFooter,
   CardAction,
 } from "@/components/ui/card";
-import {
-  ButtonGroup,
-  ButtonGroupSeparator,
-  ButtonGroupText,
-} from "@/components/ui/button-group";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
 import TransactionTable from "@/components/TransactionTable/TransactionTable";
-
+import { Link } from "react-router-dom";
 
 const Dashboard = () => {
   const { user, transactions } = useAuth();
@@ -63,11 +56,13 @@ const Dashboard = () => {
         <CardHeader>
           <CardTitle>Recent Transactions</CardTitle>
           <CardAction>
-            <Button variant="ghost">See All 🡢</Button>
+            <Button variant="ghost">
+              <Link to="/history">See All 🡢</Link>
+            </Button>
           </CardAction>
         </CardHeader>
         <CardContent>
-          <TransactionTable transactions={transactions}/>
+          <TransactionTable transactions={transactions.slice(0, 5)} />
         </CardContent>
       </Card>
     </div>

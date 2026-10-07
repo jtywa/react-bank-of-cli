@@ -2,7 +2,6 @@
     display: flex;
     padding: 0.5rem 1rem;
     justify-content: space-between;
-    gap: 10rem;
     align-items: center;
     background-color: #fefdff;
     box-shadow: rgba(50, 50, 105, 0.15) 0px 2px 5px 0px, rgba(0, 0, 0, 0.05) 0px 1px 1px 0px;
@@ -12,6 +11,7 @@
     font-family:Georgia, 'Times New Roman', Times, serif;
     font-size: 1.1rem;
     color: rgba(0,0,0,0.8);
-    border-top: 2px solid rgba(0,0,0,0.8);
-    border-bottom: 2px solid rgba(0,0,0,0.8);
+    border-top: 1px solid rgba(0,0,0,0.8);
+    border-bottom: 1px solid rgba(0,0,0,0.8);
+    text-wrap: no-wrap;
 }
