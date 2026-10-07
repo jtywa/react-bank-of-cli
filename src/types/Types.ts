@@ -3,20 +3,25 @@ export type User = {
   username: string;
   firstName: string;
   lastName: string;
-  email: Email;
+  email: string;
   password: string;
   balance: number;
   accountNumber: number;
 };
 
-export type Transaction = {
-  transactionType: TransactionType;
+export interface Transaction {
+  type: string;
   amount: number;
-  from: number;
-  to: number;
+  from: number | null;
+  to: number | null;
   timestamp: string;
-};
+}
+
+export interface DatabaseSchema {
+  users: User[];
+  transactions: Transaction[];
+}
 
 export type Email = `${string}@${string}.${string}`;
 
-export type TransactionType = "DEPOSIT" | "WITHDRAWAL" | "TRANSFER";
+//todo: make transaction type work correctly

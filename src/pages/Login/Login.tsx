@@ -3,11 +3,9 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { isValidEmail } from "@/utils/utils";
+import { useAuth } from "@/context/AuthContext";
 
 import { useState } from "react";
-
-import type { Email } from "@/types/Types";
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -18,15 +16,19 @@ const Login = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
 
+  const { login, signup } = useAuth();
+
   function handleSubmitSignIn(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     if (!username || !password) return;
-    
+    login(username, password);
   }
 
-  const handleSubmitSignUp(e: React.FormEvent<HTMLFormElement>) {
-
-  }
+  const handleSubmitSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    // return if any fields empty or pws not matching
+    signup(firstName, lastName, email, username, password);
+  };
 
   const handleFormSwap = () => {
     setIsSigningUp(!isSigningUp);
@@ -101,7 +103,7 @@ const Login = () => {
           <Separator />
 
           <CardContent>
-            <form id="login-form" onSubmit={handleSubmit}>
+            <form id="login-form" onSubmit={handleSubmitSignUp}>
               <div className="flex flex-col gap-3">
                 <div className="grid gap-1">
                   <Label htmlFor="firstName">First Name</Label>
@@ -184,9 +186,12 @@ const Login = () => {
               Sign up
             </Button>
 
-            <Button onClick={handleFormSwap} variant="link">
-              Back to sign in
-            </Button>
+            <p className="text-sm text-muted-foreground">
+              Already have an account?{" "}
+              <Button onClick={handleFormSwap} variant="link">
+                Sign in
+              </Button>
+            </p>
           </CardFooter>
         </Card>
       )}

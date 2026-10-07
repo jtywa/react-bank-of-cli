@@ -1,19 +1,25 @@
-import { useState } from "react";
 import "./App.css";
-import Login from "./components/Login/Login";
-import Dashboard from "./components/Dashboard/Dashboard";
-import data from "./data/db.json";
+import Login from "./pages/Login/Login";
+import Dashboard from "./pages/Dashboard/Dashboard";
+import Transaction from "./pages/Transaction/Transaction";
+import Recent from "./pages/Recent/Recent";
+import Settings from "./pages/Settings/Settings";
 
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 
-function App() {
-  const [userLoggedIn, setUserLoggedIn] = useState<boolean>(false);
+import { useAuth } from "./context/AuthContext";
 
+function App() {
+  const { isLoggedIn } = useAuth();
   return (
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={userLoggedIn ? <Dashboard /> : <Login />}></Route>
+          <Route path="/" element={isLoggedIn ? <Dashboard /> : <Login />}></Route>
+          <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Login />}></Route>
+          <Route path="/transaction" element={isLoggedIn ? <Transaction /> : <Login />}></Route>
+          <Route path="/recent" element={isLoggedIn ? <Recent /> : <Login />}></Route>
+          <Route path="/settings" element={isLoggedIn ? <Settings /> : <Login />}></Route>
         </Routes>
       </BrowserRouter>
     </>
