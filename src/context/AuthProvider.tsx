@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       username: username,
       password: password,
       balance: 0,
-      accountNumber: Number(generateCardNumber()),
+      accountNumber: generateCardNumber(),
     };
 
     setUsers((prev: User[]) => [...prev, newUser]);

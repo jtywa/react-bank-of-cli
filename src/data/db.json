@@ -8,7 +8,7 @@
       "email": "johnsmith@gmail.com",
       "password": "abc123",
       "balance": 1000,
-      "accountNumber": 4000329380192547
+      "accountNumber": "4000329380192547"
     }
   ],
   "transactions": [{ "type": "DEPOSIT", "amount": 100, "from": null, "to": 0, "timestamp": "10-06-26 10:11:49 UTC" }]

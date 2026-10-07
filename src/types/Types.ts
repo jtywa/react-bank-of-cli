@@ -6,7 +6,7 @@ export type User = {
   email: string;
   password: string;
   balance: number;
-  accountNumber: number;
+  accountNumber: string;
 };
 
 export interface Transaction {
