@@ -1,0 +1,16 @@
+.banner {
+    background-image: url('../../assets/buildings.png');
+    height: 20rem;
+    max-width: 80%;
+    border-radius: 2rem;
+    background-size: 100% auto; 
+    background-position: center center;
+}
+
+.container {
+    display: flex;
+    width: 100%;
+    padding: 2rem;
+    flex-direction: column;
+
+}

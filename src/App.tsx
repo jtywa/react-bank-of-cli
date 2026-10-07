@@ -4,8 +4,8 @@ import Dashboard from "./pages/Dashboard/Dashboard";
 import Transaction from "./pages/Transaction/Transaction";
 import Recent from "./pages/Recent/Recent";
 import Settings from "./pages/Settings/Settings";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import { BrowserRouter, Route, Routes, Link } from "react-router-dom";
+import NavBar from "./components/NavBar/NavBar";
 import { useAuth } from "./context/AuthContext";
 
 function App() {
@@ -13,12 +13,11 @@ function App() {
   return (
     <>
       <BrowserRouter>
-        <nav></nav>
+        {isLoggedIn && <NavBar/>}
         <Routes>
           <Route path="/" element={isLoggedIn ? <Dashboard /> : <Login />}></Route>
-          <Route path="/dashboard" element={isLoggedIn ? <Dashboard /> : <Login />}></Route>
           <Route path="/transaction" element={isLoggedIn ? <Transaction /> : <Login />}></Route>
-          <Route path="/recent" element={isLoggedIn ? <Recent /> : <Login />}></Route>
+          <Route path="/history" element={isLoggedIn ? <Recent /> : <Login />}></Route>
           <Route path="/settings" element={isLoggedIn ? <Settings /> : <Login />}></Route>
         </Routes>
       </BrowserRouter>

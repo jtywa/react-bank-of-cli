@@ -4,9 +4,9 @@
       "id": 0,
       "firstName": "John",
       "lastName": "Smith",
-      "username": "jsmith99",
+      "username": "a",
       "email": "johnsmith@gmail.com",
-      "password": "abc123",
+      "password": "a",
       "balance": 1000,
       "accountNumber": "4000329380192547"
     }

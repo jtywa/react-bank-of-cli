@@ -1,0 +1,16 @@
+.NavBar {
+    display: flex;
+    padding: 0.5rem;
+    justify-content: space-between;
+    gap: 10rem;
+    align-items: center;
+    background-color: #fefdff;
+}
+
+.logo {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 1.25rem;
+    color: oklch(0.457 0.24 277.023);
+    border-top: 2px solid oklch(0.457 0.24 277.023);
+    border-bottom: 2px solid oklch(0.457 0.24 277.023);
+}

@@ -16,3 +16,13 @@ export const generateCardNumber = (): string => {
   }
   return result;
 };
+
+export const getDate = () => {
+  const formatted: string = new Date().toLocaleDateString("en-US", {
+    weekday: "long",
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+  return formatted;
+}
