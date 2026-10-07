@@ -10,7 +10,18 @@
 .container {
     display: flex;
     width: 100%;
-    padding: 2rem;
+    padding: 3rem;
     flex-direction: column;
+    gap: 3rem;
+    background-color: rgb(247, 244, 244);
+}
 
+.serif {
+    font-family:Georgia, 'Times New Roman', Times, serif;
+    font-size: 2rem;
+}
+
+.buttons {
+    display: flex;
+    gap: .5rem;
 }
