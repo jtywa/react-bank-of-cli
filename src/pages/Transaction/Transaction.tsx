@@ -1,6 +1,13 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
+import {
+  Card,
+  CardHeader,
+  CardContent,
+  CardDescription,
+  CardTitle,
+  CardFooter,
+} from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import styles from "./Transaction.module.css";
 import { useEffect } from "react";
@@ -8,13 +15,62 @@ import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
+import { Spinner } from "@/components/ui/spinner";
+import { toast } from "@/components/ui/toast"
 
 const Transaction = () => {
   const { chosenType } = useParams();
-  const [transactionType, setTransactionType] = useState(chosenType || "deposit");
-  const { user } = useAuth();
-  const [amount, setAmount] = useState<string>("0");
+  const [transactionType, setTransactionType] = useState(
+    chosenType || "deposit",
+  );
+  const { user, deposit, withdraw } = useAuth();
+  const [amount, setAmount] = useState<string>("");
   const [recipient, setRecipient] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const handleDeposit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("ran handleDeposit");
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
+    const success = deposit(Number(amount));
+    if (success){
+      setAmount("");
+      toast.add({
+        type: "success",
+        title: "Deposit Successful!",
+  }) }
+  else {
+      toast.add({
+        type: "error",
+        title: "Deposit Failed",
+    });
+    }
+    console.log(success ? "deposit succeeded" : "deposit failed");
+  };
+
+    const handleWithdrawal = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    console.log("ran handleWithdrawal");
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
+    const success = withdraw(Number(amount));
+    if (success){
+      setAmount("")
+      toast.add({
+        type: "success",
+        title: "Withdrawal Successful!",
+  })
+    } else {
+      toast.add({
+        type: "error",
+        title: "Withdrawal Failed",
+    });
+  }
+    console.log(success ? "withdrawal succeeded" : "withdrawal failed");
+  };
 
   useEffect(() => {
     document.title = "New Transaction | Bank of CLI";
@@ -26,13 +82,25 @@ const Transaction = () => {
           <CardTitle className="self-start">New Transaction</CardTitle>
           <Tabs defaultValue={transactionType}>
             <TabsList className="gap-1">
-              <TabsTrigger className="min-w-24" value="deposit" onClick={() => setTransactionType("deposit")}>
+              <TabsTrigger
+                className="min-w-24"
+                value="deposit"
+                onClick={() => setTransactionType("deposit")}
+              >
                 Deposit
               </TabsTrigger>
-              <TabsTrigger className="min-w-24" value="withdrawal" onClick={() => setTransactionType("withdrawal")}>
+              <TabsTrigger
+                className="min-w-24"
+                value="withdrawal"
+                onClick={() => setTransactionType("withdrawal")}
+              >
                 Withdrawal
               </TabsTrigger>
-              <TabsTrigger className="min-w-24" value="transfer" onClick={() => setTransactionType("transfer")}>
+              <TabsTrigger
+                className="min-w-24"
+                value="transfer"
+                onClick={() => setTransactionType("transfer")}
+              >
                 Transfer
               </TabsTrigger>
             </TabsList>
@@ -46,19 +114,28 @@ const Transaction = () => {
               </CardHeader>
 
               <CardContent className="min-h-[240px]">
-                <form id="deposit-form">
+                <form id="deposit-form" onSubmit={handleDeposit}>
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
                       <Label htmlFor="account">To Account</Label>
-                      <Input placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`} disabled />
+                      <Input
+                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
+                        disabled
+                      />
                     </div>
 
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
-                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                      <Input
+                        name="amount"
+                        type="text"
+                        value={amount}
+                        disabled={isLoading ? true : false}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
                     </div>
                     <CardDescription>
-                      {Number(amount) > 0
+                      {Number(amount) > 0 && Number.isFinite(Number(amount))
                         ? `Resulting Balance: $${((user?.balance ?? 0) + Number(amount)).toFixed(2)}`
                         : `Current Balance: $${user?.balance}`}
                     </CardDescription>
@@ -67,8 +144,9 @@ const Transaction = () => {
               </CardContent>
 
               <CardFooter className="flex-col gap-4">
-                <Button type="submit" form="deposit-form" className="w-1/3">
-                  Deposit
+                <Button type="submit" form="deposit-form" className="w-1/3" disabled={isLoading ? true : false}>
+                  {isLoading && <Spinner className="size-6" />}
+              {isLoading ? "Depositing..." : "Deposit"}
                 </Button>
               </CardFooter>
             </Card>
@@ -79,7 +157,7 @@ const Transaction = () => {
               </CardHeader>
 
               <CardContent className="min-h-[240px]">
-                <form id="withdrawal-form">
+                <form id="withdrawal-form" onSubmit={handleWithdrawal}>
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
                       <Label htmlFor="from">From Account</Label>
@@ -93,11 +171,17 @@ const Transaction = () => {
 
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
-                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                      <Input
+                        name="amount"
+                        type="text"
+                        value={amount}
+                        disabled={isLoading ? true : false}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
                     </div>
 
                     <CardDescription>
-                      {Number(amount) > 0
+                      {Number(amount) > 0 && Number.isFinite(Number(amount))
                         ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
                         : `Current Balance: $${user?.balance}`}
                     </CardDescription>
@@ -106,8 +190,9 @@ const Transaction = () => {
               </CardContent>
 
               <CardFooter className="flex-col gap-4">
-                <Button type="submit" form="withdrawal-form" className="w-1/3">
-                  Withdraw
+                <Button type="submit" form="withdrawal-form" className="w-1/3" disabled={isLoading ? true : false}>
+                  {isLoading && <Spinner className="size-6" />}
+              {isLoading ? "Withdrawing..." : "Withdraw"}
                 </Button>
               </CardFooter>
             </Card>
@@ -122,17 +207,31 @@ const Transaction = () => {
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
                       <Label htmlFor="from">From Account</Label>
-                      <Input name="from" placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`} disabled />
+                      <Input
+                        name="from"
+                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
+                        disabled
+                      />
                     </div>
 
                     <div className="grid gap-2">
                       <Label htmlFor="user">To User</Label>
-                      <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} name="user" type="text" />
+                      <Input
+                        value={recipient}
+                        onChange={(e) => setRecipient(e.target.value)}
+                        name="user"
+                        type="text"
+                      />
                     </div>
 
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
-                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                      <Input
+                        name="amount"
+                        type="text"
+                        value={amount}
+                        onChange={(e) => setAmount(e.target.value)}
+                      />
                     </div>
 
                     <CardDescription>
@@ -146,7 +245,8 @@ const Transaction = () => {
 
               <CardFooter className="flex-col gap-4">
                 <Button type="submit" form="transfer-form" className="w-1/3">
-                  Transfer {Number(amount) > 0 && `$${amount}`} {recipient && `to ${recipient}`}
+                  Transfer {Number(amount) > 0 && `$${amount}`}{" "}
+                  {recipient && `to ${recipient}`}
                 </Button>
               </CardFooter>
             </Card>

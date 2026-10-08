@@ -30,7 +30,7 @@ const Login = () => {
     e.preventDefault();
     console.log("ran handleSubmitSignIn")
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsLoading(false);
     if (!username || !password) return; //show error
     const success = login(username, password);
@@ -41,7 +41,7 @@ const Login = () => {
     e.preventDefault();
     console.log("ran handleSubmitSignUp")
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await new Promise((resolve) => setTimeout(resolve, 1500))
     setIsLoading(false);
     // return if any fields empty or pws not matching
     const success = signup(firstName, lastName, email, username, password);

@@ -5,6 +5,8 @@ interface AuthContextType {
   user: Omit<User, "password"> | null;
   login: (username: string, password: string) => boolean;
   logout: () => void;
+  deposit: (amount: number) => boolean;
+  withdraw: (amount: number) => boolean;
   users: User[];
   setUsers: React.Dispatch<User[]>;
   transactions: Transaction[];

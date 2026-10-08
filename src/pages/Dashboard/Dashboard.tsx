@@ -17,7 +17,7 @@ const Dashboard = () => {
     document.title = "Dashboard | Bank of CLI";
     const timer = setTimeout(() => {
     setIsLoading(false);
-  }, 1500);
+  }, 1000);
   return () => clearTimeout(timer); 
   }, []);
 

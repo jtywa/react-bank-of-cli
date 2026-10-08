@@ -8,8 +8,12 @@ import { useMemo } from "react";
 import { getDateFromString } from "@/utils/utils";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [users, setUsers] = useState<User[]>(db.users);
+    const [users, setUsers] = useState<User[]>(db.users);
+    const [userId, setUserId] = useState<number | null>(null);
+    const user = useMemo(
+      () => users.find(u => u.id === userId) ?? null,
+      [users, userId]
+    );
   const [allTransactions, setAllTransactions] = useState<Transaction[]>(db.transactions);
 
   const transactions = useMemo(() => {
@@ -23,14 +27,41 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (username: string, password: string) => {
     const foundUser = users.find((u: User) => u.username === username && u.password === password);
     if (foundUser) {
-      setUser(foundUser);
+      setUserId(foundUser.id);
       return true;
     }
     return false;
   };
 
   const logout = () => {
-    setUser(null);
+    setUserId(null);
+  };
+
+  const deposit = (amount : number) => {
+    if (amount <= 0 || !user || !Number.isFinite(Number(amount))) return false;
+    const newBalance = user.balance + amount;
+    setUsers(prev =>
+      prev.map(account =>
+        account.id === user?.id
+          ? { ...account, balance: newBalance }
+          : account
+      ))
+      console.log()
+      return true;
+  };
+
+    const withdraw = (amount : number) => {
+      if (!user || !Number.isFinite(Number(amount))) return false;
+      const balance = user ? user.balance : 0;
+      if (amount > balance) return false;
+      const newBalance = user.balance - amount;
+      setUsers(prev =>
+        prev.map(account =>
+          account.id === user?.id
+            ? { ...account, balance: newBalance }
+            : account
+        ))
+      return true;
   };
 
   const signup = (firstName: string, lastName: string, email: string, username: string, password: string) => {
@@ -59,11 +90,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, signup, users, setUsers, transactions, setAllTransactions, isLoggedIn: !!user }}
+      value={{ user, login, logout, signup, deposit, withdraw, users, setUsers, transactions, setAllTransactions, isLoggedIn: !!user }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
+
 
 // todo: should probably make setters for data private

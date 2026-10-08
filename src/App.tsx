@@ -7,6 +7,7 @@ import Settings from "./pages/Settings/Settings";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";
 import { useAuth } from "./context/AuthContext";
+import { Toaster } from "@/components/ui/toast"
 
 function App() {
   const { isLoggedIn } = useAuth();
@@ -21,6 +22,7 @@ function App() {
           <Route path="/settings" element={isLoggedIn ? <Settings /> : <Login />}></Route>
         </Routes>
       </BrowserRouter>
+      <Toaster/>
     </>
   );
 }
