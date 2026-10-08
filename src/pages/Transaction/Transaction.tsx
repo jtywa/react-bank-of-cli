@@ -1,6 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import { Card, CardHeader, CardContent, CardTitle, CardFooter } from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import styles from "./Transaction.module.css";
 import { useEffect } from "react";
@@ -14,6 +14,8 @@ const Transaction = () => {
   const { chosenType } = useParams();
   const [transactionType, setTransactionType] = useState(chosenType || "deposit");
   const { user } = useAuth();
+  const [amount, setAmount] = useState<string>("0");
+  const [recipient, setRecipient] = useState<string>("");
 
   useEffect(() => {
     document.title = "New Transaction | Bank of CLI";
@@ -22,7 +24,7 @@ const Transaction = () => {
     <div className={styles.container}>
       <Card className="min-w-1/2">
         <CardHeader className="flex justify-center flex-col items-center">
-          <div className={styles.serif}>Make a Transaction</div>
+          <div className={styles.serif}>New Transaction</div>
           <Tabs defaultValue={transactionType}>
             <TabsList className="gap-1">
               <TabsTrigger className="min-w-24" value="deposit" onClick={() => setTransactionType("deposit")}>
@@ -45,29 +47,28 @@ const Transaction = () => {
               </CardHeader>
 
               <CardContent>
-                <form id="login-form">
-                  <div className="flex flex-col gap-3">
+                <form id="deposit-form">
+                  <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
-                      <Label htmlFor="username">To Account</Label>
-                      <Input
-                        id="username"
-                        name="username"
-                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
-                        type="text"
-                        disabled
-                      />
+                      <Label htmlFor="account">To Account</Label>
+                      <Input placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`} disabled />
                     </div>
 
                     <div className="grid gap-2">
-                      <Label htmlFor="password">Amount</Label>
-                      <Input />
+                      <Label htmlFor="amount">Amount</Label>
+                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
                     </div>
+                    <CardDescription>
+                      {Number(amount) > 0
+                        ? `Resulting Balance: $${((user?.balance ?? 0) + Number(amount)).toFixed(2)}`
+                        : `Current Balance: $${user?.balance}`}
+                    </CardDescription>
                   </div>
                 </form>
               </CardContent>
 
               <CardFooter className="flex-col gap-4">
-                <Button type="submit" form="login-form" className="w-1/3">
+                <Button type="submit" form="deposit-form" className="w-1/3">
                   Deposit
                 </Button>
               </CardFooter>
@@ -79,13 +80,12 @@ const Transaction = () => {
               </CardHeader>
 
               <CardContent>
-                <form id="login-form">
-                  <div className="flex flex-col gap-3">
+                <form id="withdrawal-form">
+                  <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
-                      <Label htmlFor="username">From Account</Label>
+                      <Label htmlFor="from">From Account</Label>
                       <Input
-                        id="username"
-                        name="username"
+                        name="from"
                         placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
                         type="text"
                         disabled
@@ -93,21 +93,64 @@ const Transaction = () => {
                     </div>
 
                     <div className="grid gap-2">
-                      <Label htmlFor="password">Amount</Label>
-                      <Input />
+                      <Label htmlFor="amount">Amount</Label>
+                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
                     </div>
+
+                    <CardDescription>
+                      {Number(amount) > 0
+                        ? `Resulting Balance: $${((user?.balance ?? 0) + Number(amount)).toFixed(2)}`
+                        : `Current Balance: $${user?.balance}`}
+                    </CardDescription>
                   </div>
                 </form>
               </CardContent>
 
               <CardFooter className="flex-col gap-4">
-                <Button type="submit" form="login-form" className="w-1/3">
+                <Button type="submit" form="withdrawal-form" className="w-1/3">
                   Withdraw
                 </Button>
               </CardFooter>
             </Card>
           ) : transactionType === "transfer" ? (
-            "transfer"
+            <Card className="w-full ">
+              <CardHeader>
+                <CardTitle>Transfer Funds</CardTitle>
+              </CardHeader>
+
+              <CardContent>
+                <form id="transfer-form">
+                  <div className="flex flex-col gap-5">
+                    <div className="grid gap-2">
+                      <Label htmlFor="from">From Account</Label>
+                      <Input name="from" placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`} disabled />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="user">To User</Label>
+                      <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} name="user" type="text" />
+                    </div>
+
+                    <div className="grid gap-2">
+                      <Label htmlFor="amount">Amount</Label>
+                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                    </div>
+
+                    <CardDescription>
+                      {Number(amount) > 0
+                        ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
+                        : `Current Balance: $${user?.balance}`}
+                    </CardDescription>
+                  </div>
+                </form>
+              </CardContent>
+
+              <CardFooter className="flex-col gap-4">
+                <Button type="submit" form="transfer-form" className="w-1/3">
+                  Transfer {Number(amount) > 0 && `$${amount}`} {recipient && `to ${recipient}`}
+                </Button>
+              </CardFooter>
+            </Card>
           ) : (
             ""
           )}

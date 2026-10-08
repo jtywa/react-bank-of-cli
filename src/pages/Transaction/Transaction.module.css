@@ -8,6 +8,10 @@
   overflow: hidden;
   scrollbar-width: none;
   align-items: center;
+  height: 90dvh;
+  overflow: hidden;
+  scrollbar-width: none;
+  justify-content: center;
 }
 
 .serif {

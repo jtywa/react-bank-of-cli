@@ -50,9 +50,7 @@ const NavBar = () => {
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuTrigger>
-              <NavLink to="/transaction">New Transaction</NavLink>
-            </NavigationMenuTrigger>
+            <NavigationMenuTrigger>New Transaction</NavigationMenuTrigger>
             <NavigationMenuContent>
               <NavigationMenuLink render={<NavLink to="/transaction/deposit" />}>Deposit</NavigationMenuLink>
               <NavigationMenuLink render={<NavLink to="/transaction/withdrawal" />}>Withdrawal</NavigationMenuLink>
