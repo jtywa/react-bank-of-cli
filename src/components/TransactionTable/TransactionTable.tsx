@@ -30,7 +30,7 @@ const TransactionTable = ({
   const { user } = useAuth();
 
   return (
-    <Card className="min-h-[400px]">
+    <Card className="min-h-[370px]">
       <CardContent>
         <Table>
           <TableHeader>

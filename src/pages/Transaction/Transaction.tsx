@@ -22,9 +22,9 @@ const Transaction = () => {
   }, []);
   return (
     <div className={styles.container}>
-      <Card className="min-w-1/2">
+      <Card className="min-w-1/2 max-w-[600px]">
         <CardHeader className="flex justify-center flex-col items-center">
-          <div className={styles.serif}>New Transaction</div>
+          <CardTitle className="self-start">New Transaction</CardTitle>
           <Tabs defaultValue={transactionType}>
             <TabsList className="gap-1">
               <TabsTrigger className="min-w-24" value="deposit" onClick={() => setTransactionType("deposit")}>
@@ -46,7 +46,7 @@ const Transaction = () => {
                 <CardTitle>Deposit Funds</CardTitle>
               </CardHeader>
 
-              <CardContent>
+              <CardContent className="min-h-[240px]">
                 <form id="deposit-form">
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
@@ -79,7 +79,7 @@ const Transaction = () => {
                 <CardTitle>Withdraw Funds</CardTitle>
               </CardHeader>
 
-              <CardContent>
+              <CardContent className="min-h-[240px]">
                 <form id="withdrawal-form">
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
@@ -118,7 +118,7 @@ const Transaction = () => {
                 <CardTitle>Transfer Funds</CardTitle>
               </CardHeader>
 
-              <CardContent>
+              <CardContent className="min-h-[240px]">
                 <form id="transfer-form">
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
