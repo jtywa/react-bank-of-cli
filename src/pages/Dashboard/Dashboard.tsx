@@ -6,13 +6,19 @@ import { Button } from "@/components/ui/button";
 import TransactionTable from "@/components/TransactionTable/TransactionTable";
 import { Link } from "react-router-dom";
 import { WalletMinimal } from "lucide-react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const Dashboard = () => {
   const { user, transactions } = useAuth();
-
+  const [isLoading, setIsLoading] = useState(true);
+  
   useEffect(() => {
     document.title = "Dashboard | Bank of CLI";
+    const timer = setTimeout(() => {
+    setIsLoading(false);
+  }, 1500);
+  return () => clearTimeout(timer); 
   }, []);
 
   return (
@@ -33,16 +39,24 @@ const Dashboard = () => {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <WalletMinimal />
-                <span>Personal Checking</span>
+                {isLoading ? <Skeleton className="h-[24px]  w-[24px] rounded"></Skeleton> : <WalletMinimal />}
+                {isLoading ? <Skeleton className="h-[20px] m-[4px] w-[150px] rounded"></Skeleton> :
+                <span>Personal Checking</span>}
+                
               </CardTitle>
+              {isLoading ? <Skeleton className="h-[12px] m-[4px] w-[60px] rounded"></Skeleton> :
               <CardDescription>•••• {user?.accountNumber?.slice(-4)}</CardDescription>
+              }
+              
             </CardHeader>
             <CardContent>
-              <div className={styles.cash}>${user?.balance?.toFixed(2)}</div>
-              <div className="pb-1 text-[10px]">AVAILABLE BALANCE</div>
+              {isLoading ? <Skeleton className="h-[44px] m-[4px] w-[150px] rounded"></Skeleton> : <div className={styles.cash}>${user?.balance?.toFixed(2)}</div>}
+              
+              {isLoading ? <Skeleton className="h-[16px] mb-[4px] w-[100px] rounded"></Skeleton> : <div className="pb-1 text-[10px]">AVAILABLE BALANCE</div>}
+              
+              
               <div className="pt-2">
-                <div className={styles.buttons}>
+                {isLoading ? <Skeleton className="h-[32px] w-[240px] rounded"></Skeleton> : <div className={styles.buttons}>
                   <Button variant="outline">
                     <Link to="/transaction/deposit">Deposit</Link>
                   </Button>
@@ -52,7 +66,9 @@ const Dashboard = () => {
                   <Button variant="outline">
                     <Link to="/transaction/transfer">Transfer</Link>
                   </Button>
-                </div>
+                </div>}
+                
+                
               </div>
             </CardContent>
           </Card>
@@ -68,7 +84,7 @@ const Dashboard = () => {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <TransactionTable transactions={transactions.slice(0, 5)} />
+          <TransactionTable isLoading={isLoading} transactions={transactions.slice(0, 5)} />
         </CardContent>
       </Card>
     </div>
