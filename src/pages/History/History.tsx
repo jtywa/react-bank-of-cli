@@ -4,6 +4,13 @@ import { useAuth } from "@/context/AuthContext";
 import type { Transaction } from "@/types/Types";
 import { useState, useEffect } from "react";
 import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+} from "@/components/ui/card";
+import {
   Pagination,
   PaginationContent,
   PaginationEllipsis,
@@ -32,60 +39,69 @@ const History = () => {
 
   return (
     <div className={styles.container}>
-      <TransactionTable isLoading={isLoading}
-        transactions={getPageItems(transactions, page)}
-      ></TransactionTable>
-
-      <Pagination>
-        <PaginationContent>
-          <PaginationItem>
-            <PaginationPrevious
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setPage((p) => Math.max(1, p - 1));
-              }}
-              aria-disabled={page === 1}
-              className={page === 1 ? "pointer-events-none opacity-50" : ""}
-            />
-          </PaginationItem>
-
-          {getPageNumbers(page, totalPages).map((p, i) =>
-            p === "ellipsis" ? (
-              <PaginationItem key={`e-${i}`}>
-                <PaginationEllipsis />
-              </PaginationItem>
-            ) : (
-              <PaginationItem key={p}>
-                <PaginationLink
+      <Card>
+        <CardHeader>
+          <CardTitle>Transaction History</CardTitle>
+        </CardHeader>
+        <CardContent>
+          <TransactionTable
+            isLoading={isLoading}
+            transactions={getPageItems(transactions, page)}
+          ></TransactionTable>
+        </CardContent>
+        <CardFooter>
+          <Pagination>
+            <PaginationContent>
+              <PaginationItem>
+                <PaginationPrevious
                   href="#"
-                  isActive={p === page}
                   onClick={(e) => {
                     e.preventDefault();
-                    setPage(p);
+                    setPage((p) => Math.max(1, p - 1));
                   }}
-                >
-                  {p}
-                </PaginationLink>
+                  aria-disabled={page === 1}
+                  className={page === 1 ? "pointer-events-none opacity-50" : ""}
+                />
               </PaginationItem>
-            ),
-          )}
 
-          <PaginationItem>
-            <PaginationNext
-              href="#"
-              onClick={(e) => {
-                e.preventDefault();
-                setPage((p) => Math.min(totalPages, p + 1));
-              }}
-              aria-disabled={page === totalPages}
-              className={
-                page === totalPages ? "pointer-events-none opacity-50" : ""
-              }
-            />
-          </PaginationItem>
-        </PaginationContent>
-      </Pagination>
+              {getPageNumbers(page, totalPages).map((p, i) =>
+                p === "ellipsis" ? (
+                  <PaginationItem key={`e-${i}`}>
+                    <PaginationEllipsis />
+                  </PaginationItem>
+                ) : (
+                  <PaginationItem key={p}>
+                    <PaginationLink
+                      href="#"
+                      isActive={p === page}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        setPage(p);
+                      }}
+                    >
+                      {p}
+                    </PaginationLink>
+                  </PaginationItem>
+                ),
+              )}
+
+              <PaginationItem>
+                <PaginationNext
+                  href="#"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setPage((p) => Math.min(totalPages, p + 1));
+                  }}
+                  aria-disabled={page === totalPages}
+                  className={
+                    page === totalPages ? "pointer-events-none opacity-50" : ""
+                  }
+                />
+              </PaginationItem>
+            </PaginationContent>
+          </Pagination>
+        </CardFooter>
+      </Card>
     </div>
   );
 };
