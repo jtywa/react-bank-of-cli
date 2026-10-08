@@ -2,7 +2,7 @@ import "./App.css";
 import Login from "./pages/Login/Login";
 import Dashboard from "./pages/Dashboard/Dashboard";
 import Transaction from "./pages/Transaction/Transaction";
-import Recent from "./pages/Recent/Recent";
+import Recent from "./pages/History/History";
 import Settings from "./pages/Settings/Settings";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import NavBar from "./components/NavBar/NavBar";

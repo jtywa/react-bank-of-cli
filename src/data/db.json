@@ -19,16 +19,898 @@
       "password": "s",
       "balance": 500.29,
       "accountNumber": "4000329380191984"
+    },
+    {
+      "id": 2,
+      "firstName": "Marcus",
+      "lastName": "Johnson",
+      "username": "mjohnson",
+      "email": "marcus.johnson@outlook.com",
+      "password": "mj2026!",
+      "balance": 1243.88,
+      "accountNumber": "4000329380193261"
+    },
+    {
+      "id": 3,
+      "firstName": "Priya",
+      "lastName": "Patel",
+      "username": "ppatel",
+      "email": "priya.patel@gmail.com",
+      "password": "priya123",
+      "balance": 3105.12,
+      "accountNumber": "4000329380194875"
+    },
+    {
+      "id": 4,
+      "firstName": "Carlos",
+      "lastName": "Rivera",
+      "username": "crivera",
+      "email": "carlos.rivera@yahoo.com",
+      "password": "carlos456",
+      "balance": 72.5,
+      "accountNumber": "4000329380195103"
+    },
+    {
+      "id": 5,
+      "firstName": "Emily",
+      "lastName": "Chen",
+      "username": "echen",
+      "email": "emily.chen@gmail.com",
+      "password": "emily789",
+      "balance": 2210.67,
+      "accountNumber": "4000329380196428"
+    },
+    {
+      "id": 6,
+      "firstName": "David",
+      "lastName": "Kim",
+      "username": "dkim",
+      "email": "david.kim@icloud.com",
+      "password": "dkim2026",
+      "balance": 4587.34,
+      "accountNumber": "4000329380197792"
+    },
+    {
+      "id": 7,
+      "firstName": "Sophie",
+      "lastName": "Laurent",
+      "username": "slaurent",
+      "email": "sophie.laurent@gmail.com",
+      "password": "sophie321",
+      "balance": 389.91,
+      "accountNumber": "4000329380198316"
+    },
+    {
+      "id": 8,
+      "firstName": "Omar",
+      "lastName": "Hassan",
+      "username": "ohassan",
+      "email": "omar.hassan@outlook.com",
+      "password": "omar654",
+      "balance": 1675.2,
+      "accountNumber": "4000329380199054"
+    },
+    {
+      "id": 9,
+      "firstName": "Rachel",
+      "lastName": "Thompson",
+      "username": "rthompson",
+      "email": "rachel.thompson@gmail.com",
+      "password": "rachel987",
+      "balance": 925.76,
+      "accountNumber": "4000329380190637"
+    },
+    {
+      "id": 10,
+      "firstName": "Tyler",
+      "lastName": "Nguyen",
+      "username": "tnguyen",
+      "email": "tyler.nguyen@yahoo.com",
+      "password": "tyler159",
+      "balance": 2840.45,
+      "accountNumber": "4000329380191275"
     }
   ],
   "transactions": [
-    { "id": 0, "type": "deposit", "amount": 100.0, "from": null, "to": 0, "date": "2026-10-07" },
-    { "id": 1, "type": "deposit", "amount": 50.0, "from": null, "to": 1, "date": "2026-10-02" },
-    { "id": 2, "type": "withdrawal", "amount": 10.26, "from": 0, "to": null, "date": "2026-10-03" },
-    { "id": 3, "type": "withdrawal", "amount": 34.01, "from": 0, "to": 0, "date": "2026-10-03" },
-    { "id": 4, "type": "transfer", "amount": 228.0, "from": 0, "to": 1, "date": "2026-10-07" },
-    { "id": 5, "type": "transfer", "amount": 18.0, "from": 1, "to": 0, "date": "2026-10-02" },
-    { "id": 6, "type": "deposit", "amount": 15.45, "from": null, "to": 1, "date": "2026-10-01" },
-    { "id": 7, "type": "deposit", "amount": 100, "from": null, "to": 0, "date": "2026-10-07" }
+    {
+      "id": 0,
+      "type": "deposit",
+      "amount": 100.0,
+      "from": null,
+      "to": 0,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 1,
+      "type": "deposit",
+      "amount": 50.0,
+      "from": null,
+      "to": 1,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 2,
+      "type": "withdrawal",
+      "amount": 10.26,
+      "from": 0,
+      "to": null,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 3,
+      "type": "withdrawal",
+      "amount": 34.01,
+      "from": 1,
+      "to": null,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 4,
+      "type": "transfer",
+      "amount": 228.0,
+      "from": 0,
+      "to": 1,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 5,
+      "type": "transfer",
+      "amount": 18.0,
+      "from": 1,
+      "to": 0,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 6,
+      "type": "deposit",
+      "amount": 15.45,
+      "from": null,
+      "to": 1,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 7,
+      "type": "deposit",
+      "amount": 100,
+      "from": null,
+      "to": 0,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 8,
+      "type": "withdrawal",
+      "amount": 62.75,
+      "from": 2,
+      "to": null,
+      "date": "2026-09-30"
+    },
+    {
+      "id": 9,
+      "type": "deposit",
+      "amount": 250.0,
+      "from": null,
+      "to": 3,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 10,
+      "type": "transfer",
+      "amount": 75.5,
+      "from": 3,
+      "to": 5,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 11,
+      "type": "withdrawal",
+      "amount": 18.99,
+      "from": 4,
+      "to": null,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 12,
+      "type": "deposit",
+      "amount": 1200.0,
+      "from": null,
+      "to": 6,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 13,
+      "type": "transfer",
+      "amount": 300.0,
+      "from": 6,
+      "to": 2,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 14,
+      "type": "withdrawal",
+      "amount": 45.2,
+      "from": 5,
+      "to": null,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 15,
+      "type": "deposit",
+      "amount": 20.0,
+      "from": null,
+      "to": 7,
+      "date": "2026-09-28"
+    },
+    {
+      "id": 16,
+      "type": "withdrawal",
+      "amount": 9.5,
+      "from": 7,
+      "to": null,
+      "date": "2026-09-29"
+    },
+    {
+      "id": 17,
+      "type": "transfer",
+      "amount": 60.0,
+      "from": 8,
+      "to": 9,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 18,
+      "type": "deposit",
+      "amount": 85.75,
+      "from": null,
+      "to": 8,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 19,
+      "type": "withdrawal",
+      "amount": 120.0,
+      "from": 9,
+      "to": null,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 20,
+      "type": "transfer",
+      "amount": 42.1,
+      "from": 10,
+      "to": 4,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 21,
+      "type": "deposit",
+      "amount": 500.0,
+      "from": null,
+      "to": 10,
+      "date": "2026-09-30"
+    },
+    {
+      "id": 22,
+      "type": "withdrawal",
+      "amount": 27.34,
+      "from": 3,
+      "to": null,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 23,
+      "type": "transfer",
+      "amount": 15.0,
+      "from": 2,
+      "to": 7,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 24,
+      "type": "deposit",
+      "amount": 33.33,
+      "from": null,
+      "to": 4,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 25,
+      "type": "withdrawal",
+      "amount": 80.0,
+      "from": 6,
+      "to": null,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 26,
+      "type": "transfer",
+      "amount": 150.0,
+      "from": 9,
+      "to": 0,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 27,
+      "type": "deposit",
+      "amount": 72.0,
+      "from": null,
+      "to": 2,
+      "date": "2026-09-27"
+    },
+    {
+      "id": 28,
+      "type": "withdrawal",
+      "amount": 14.85,
+      "from": 8,
+      "to": null,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 29,
+      "type": "transfer",
+      "amount": 95.25,
+      "from": 5,
+      "to": 10,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 30,
+      "type": "deposit",
+      "amount": 340.0,
+      "from": null,
+      "to": 1,
+      "date": "2026-09-26"
+    },
+    {
+      "id": 31,
+      "type": "withdrawal",
+      "amount": 22.4,
+      "from": 0,
+      "to": null,
+      "date": "2026-09-27"
+    },
+    {
+      "id": 32,
+      "type": "transfer",
+      "amount": 85.0,
+      "from": 7,
+      "to": 3,
+      "date": "2026-09-28"
+    },
+    {
+      "id": 33,
+      "type": "deposit",
+      "amount": 61.2,
+      "from": null,
+      "to": 9,
+      "date": "2026-09-29"
+    },
+    {
+      "id": 34,
+      "type": "withdrawal",
+      "amount": 140.75,
+      "from": 6,
+      "to": null,
+      "date": "2026-09-30"
+    },
+    {
+      "id": 35,
+      "type": "transfer",
+      "amount": 25.0,
+      "from": 4,
+      "to": 8,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 36,
+      "type": "deposit",
+      "amount": 900.0,
+      "from": null,
+      "to": 5,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 37,
+      "type": "withdrawal",
+      "amount": 7.89,
+      "from": 10,
+      "to": null,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 38,
+      "type": "transfer",
+      "amount": 112.5,
+      "from": 2,
+      "to": 0,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 39,
+      "type": "deposit",
+      "amount": 45.0,
+      "from": null,
+      "to": 4,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 40,
+      "type": "withdrawal",
+      "amount": 56.12,
+      "from": 3,
+      "to": null,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 41,
+      "type": "transfer",
+      "amount": 200.0,
+      "from": 10,
+      "to": 6,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 42,
+      "type": "deposit",
+      "amount": 18.75,
+      "from": null,
+      "to": 7,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 43,
+      "type": "withdrawal",
+      "amount": 39.99,
+      "from": 1,
+      "to": null,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 44,
+      "type": "transfer",
+      "amount": 64.0,
+      "from": 9,
+      "to": 2,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 45,
+      "type": "deposit",
+      "amount": 275.5,
+      "from": null,
+      "to": 8,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 46,
+      "type": "withdrawal",
+      "amount": 12.0,
+      "from": 5,
+      "to": null,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 47,
+      "type": "transfer",
+      "amount": 33.0,
+      "from": 0,
+      "to": 9,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 48,
+      "type": "deposit",
+      "amount": 150.0,
+      "from": null,
+      "to": 10,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 49,
+      "type": "withdrawal",
+      "amount": 88.45,
+      "from": 8,
+      "to": null,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 50,
+      "type": "transfer",
+      "amount": 47.25,
+      "from": 5,
+      "to": 1,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 51,
+      "type": "deposit",
+      "amount": 600.0,
+      "from": null,
+      "to": 3,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 52,
+      "type": "withdrawal",
+      "amount": 29.5,
+      "from": 7,
+      "to": null,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 53,
+      "type": "transfer",
+      "amount": 310.0,
+      "from": 6,
+      "to": 4,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 54,
+      "type": "deposit",
+      "amount": 24.99,
+      "from": null,
+      "to": 2,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 55,
+      "type": "withdrawal",
+      "amount": 65.0,
+      "from": 9,
+      "to": null,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 56,
+      "type": "transfer",
+      "amount": 19.5,
+      "from": 1,
+      "to": 7,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 57,
+      "type": "deposit",
+      "amount": 410.0,
+      "from": null,
+      "to": 6,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 58,
+      "type": "withdrawal",
+      "amount": 15.3,
+      "from": 4,
+      "to": null,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 59,
+      "type": "transfer",
+      "amount": 125.0,
+      "from": 3,
+      "to": 10,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 60,
+      "type": "deposit",
+      "amount": 78.4,
+      "from": null,
+      "to": 0,
+      "date": "2026-09-25"
+    },
+    {
+      "id": 61,
+      "type": "withdrawal",
+      "amount": 101.2,
+      "from": 2,
+      "to": null,
+      "date": "2026-09-26"
+    },
+    {
+      "id": 62,
+      "type": "transfer",
+      "amount": 55.0,
+      "from": 8,
+      "to": 5,
+      "date": "2026-09-27"
+    },
+    {
+      "id": 63,
+      "type": "deposit",
+      "amount": 1000.0,
+      "from": null,
+      "to": 10,
+      "date": "2026-09-28"
+    },
+    {
+      "id": 64,
+      "type": "withdrawal",
+      "amount": 43.67,
+      "from": 0,
+      "to": null,
+      "date": "2026-09-29"
+    },
+    {
+      "id": 65,
+      "type": "transfer",
+      "amount": 90.0,
+      "from": 4,
+      "to": 3,
+      "date": "2026-09-29"
+    },
+    {
+      "id": 66,
+      "type": "deposit",
+      "amount": 36.0,
+      "from": null,
+      "to": 1,
+      "date": "2026-09-30"
+    },
+    {
+      "id": 67,
+      "type": "withdrawal",
+      "amount": 9.99,
+      "from": 6,
+      "to": null,
+      "date": "2026-09-30"
+    },
+    {
+      "id": 68,
+      "type": "transfer",
+      "amount": 180.75,
+      "from": 7,
+      "to": 9,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 69,
+      "type": "deposit",
+      "amount": 52.5,
+      "from": null,
+      "to": 5,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 70,
+      "type": "withdrawal",
+      "amount": 74.8,
+      "from": 10,
+      "to": null,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 71,
+      "type": "transfer",
+      "amount": 22.0,
+      "from": 2,
+      "to": 8,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 72,
+      "type": "deposit",
+      "amount": 320.0,
+      "from": null,
+      "to": 4,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 73,
+      "type": "withdrawal",
+      "amount": 51.25,
+      "from": 1,
+      "to": null,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 74,
+      "type": "transfer",
+      "amount": 140.0,
+      "from": 9,
+      "to": 6,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 75,
+      "type": "deposit",
+      "amount": 95.0,
+      "from": null,
+      "to": 7,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 76,
+      "type": "withdrawal",
+      "amount": 18.0,
+      "from": 3,
+      "to": null,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 77,
+      "type": "transfer",
+      "amount": 70.5,
+      "from": 0,
+      "to": 5,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 78,
+      "type": "deposit",
+      "amount": 215.0,
+      "from": null,
+      "to": 9,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 79,
+      "type": "withdrawal",
+      "amount": 132.4,
+      "from": 5,
+      "to": null,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 80,
+      "type": "transfer",
+      "amount": 38.0,
+      "from": 10,
+      "to": 1,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 81,
+      "type": "deposit",
+      "amount": 12.5,
+      "from": null,
+      "to": 8,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 82,
+      "type": "withdrawal",
+      "amount": 27.77,
+      "from": 7,
+      "to": null,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 83,
+      "type": "transfer",
+      "amount": 260.0,
+      "from": 4,
+      "to": 2,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 84,
+      "type": "deposit",
+      "amount": 700.0,
+      "from": null,
+      "to": 3,
+      "date": "2026-10-07"
+    },
+    {
+      "id": 85,
+      "type": "withdrawal",
+      "amount": 48.6,
+      "from": 8,
+      "to": null,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 86,
+      "type": "transfer",
+      "amount": 99.99,
+      "from": 6,
+      "to": 0,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 87,
+      "type": "deposit",
+      "amount": 58.0,
+      "from": null,
+      "to": 2,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 88,
+      "type": "withdrawal",
+      "amount": 16.45,
+      "from": 9,
+      "to": null,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 89,
+      "type": "transfer",
+      "amount": 44.0,
+      "from": 1,
+      "to": 10,
+      "date": "2026-10-08"
+    },
+    {
+      "id": 90,
+      "type": "deposit",
+      "amount": 190.0,
+      "from": null,
+      "to": 6,
+      "date": "2026-09-27"
+    },
+    {
+      "id": 91,
+      "type": "withdrawal",
+      "amount": 83.1,
+      "from": 4,
+      "to": null,
+      "date": "2026-09-28"
+    },
+    {
+      "id": 92,
+      "type": "transfer",
+      "amount": 27.5,
+      "from": 3,
+      "to": 7,
+      "date": "2026-09-29"
+    },
+    {
+      "id": 93,
+      "type": "deposit",
+      "amount": 66.66,
+      "from": null,
+      "to": 10,
+      "date": "2026-10-01"
+    },
+    {
+      "id": 94,
+      "type": "withdrawal",
+      "amount": 35.0,
+      "from": 2,
+      "to": null,
+      "date": "2026-10-02"
+    },
+    {
+      "id": 95,
+      "type": "transfer",
+      "amount": 155.0,
+      "from": 8,
+      "to": 4,
+      "date": "2026-10-03"
+    },
+    {
+      "id": 96,
+      "type": "deposit",
+      "amount": 480.0,
+      "from": null,
+      "to": 0,
+      "date": "2026-10-04"
+    },
+    {
+      "id": 97,
+      "type": "withdrawal",
+      "amount": 21.15,
+      "from": 6,
+      "to": null,
+      "date": "2026-10-05"
+    },
+    {
+      "id": 98,
+      "type": "transfer",
+      "amount": 73.0,
+      "from": 5,
+      "to": 9,
+      "date": "2026-10-06"
+    },
+    {
+      "id": 99,
+      "type": "deposit",
+      "amount": 130.0,
+      "from": null,
+      "to": 1,
+      "date": "2026-10-07"
+    }
   ]
 }

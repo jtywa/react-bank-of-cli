@@ -17,6 +17,7 @@ import { capitalize } from "@/utils/utils";
 import { useAuth } from "@/context/AuthContext";
 import { Skeleton } from "../ui/skeleton";
 
+
 interface TransactionTableProps {
   transactions: Transaction[];
   isLoading?: boolean;
@@ -29,15 +30,15 @@ const TransactionTable = ({
   const { user } = useAuth();
 
   return (
-    <Card>
+    <Card className="min-h-[400px]">
       <CardContent>
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="w-1/2">TRANSACTION</TableHead>
-              <TableHead className="">DATE</TableHead>
-              <TableHead className="pl-6">STATUS</TableHead>
-              <TableHead className="text-right">AMOUNT</TableHead>
+              <TableHead className="w-1/2 min-w-[160px]">TRANSACTION</TableHead>
+              <TableHead className="min-w-[200px]">DATE</TableHead>
+              <TableHead className="pl-6 min-w-[110px]">STATUS</TableHead>
+              <TableHead className="text-right min-w-[180px]">AMOUNT</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
