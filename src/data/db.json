@@ -10,7 +10,7 @@
       "balance": 856.43,
       "accountNumber": "4000329380192547"
     },
-        {
+    {
       "id": 1,
       "firstName": "Jane",
       "lastName": "Adams",
@@ -22,14 +22,13 @@
     }
   ],
   "transactions": [
-{ "id": 0, "type": "DEPOSIT", "amount": 100.00, "from": null, "to": 0, "date": "2026-10-02" },
-{ "id": 1, "type": "DEPOSIT", "amount": 50.00, "from": null, "to": 1, "date": "2026-10-02" },
-{ "id": 2, "type": "WITHDRAWAL", "amount": 10.26, "from": 0, "to": null, "date": "2026-10-03" },
-{ "id": 3, "type": "WITHDRAWAL", "amount": 34.01, "from": 0, "to": 0, "date": "2026-10-03" },
-{ "id": 4, "type": "TRANSFER", "amount": 228.00, "from": 0, "to": 1, "date": "2026-10-05" },
-{ "id": 5, "type": "TRANSFER", "amount": 18.00, "from": 1, "to": 0, "date": "2026-10-02" },
-{ "id": 6, "type": "DEPOSIT", "amount": 15.45, "from": null, "to": 1, "date": "2026-10-01" },
-{ "id": 7, "type": "DEPOSIT", "amount": 100, "from": null, "to": 0, "date": "2026-10-07" }
-
-]
+    { "id": 0, "type": "deposit", "amount": 100.0, "from": null, "to": 0, "date": "2026-10-07" },
+    { "id": 1, "type": "deposit", "amount": 50.0, "from": null, "to": 1, "date": "2026-10-02" },
+    { "id": 2, "type": "withdrawal", "amount": 10.26, "from": 0, "to": null, "date": "2026-10-03" },
+    { "id": 3, "type": "withdrawal", "amount": 34.01, "from": 0, "to": 0, "date": "2026-10-03" },
+    { "id": 4, "type": "transfer", "amount": 228.0, "from": 0, "to": 1, "date": "2026-10-07" },
+    { "id": 5, "type": "transfer", "amount": 18.0, "from": 1, "to": 0, "date": "2026-10-02" },
+    { "id": 6, "type": "deposit", "amount": 15.45, "from": null, "to": 1, "date": "2026-10-01" },
+    { "id": 7, "type": "deposit", "amount": 100, "from": null, "to": 0, "date": "2026-10-07" }
+  ]
 }

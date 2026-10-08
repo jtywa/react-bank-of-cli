@@ -1,7 +1,6 @@
-import React from "react";
-import { Link } from "react-router-dom";
-import { Button } from "../ui/button";
+import { Link, NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
+import { useState } from "react";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -16,49 +15,49 @@ import {
   AlertDialogAction,
   AlertDialogCancel,
   AlertDialogContent,
-  AlertDialogDescription,
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 
 const NavBar = () => {
   const { logout, user } = useAuth();
+  const [signOutOpen, setSignOutOpen] = useState(false);
   const initials = `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`;
 
   return (
     <div className={styles.NavBar}>
-      <div className={styles.logo}>Bank of CLI</div>
+      <Link to="/">
+        <div className="border-t-1 border-b-1 py-[2px] border-black hover:opacity-60">
+          <div className={styles.logo}>Bank of CLI</div>
+        </div>
+      </Link>
+
       <NavigationMenu>
-        <NavigationMenuList>
+        <NavigationMenuList className="gap-2">
           <NavigationMenuItem>
-            <NavigationMenuLink
-              className={navigationMenuTriggerStyle()}
-              render={<Link to="/" />}
-            >
+            <NavigationMenuLink className={navigationMenuTriggerStyle()} render={<NavLink to="/" />}>
               Dashboard
             </NavigationMenuLink>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuTrigger>Transactions</NavigationMenuTrigger>
-            <NavigationMenuContent>
-              <NavigationMenuLink>Deposit</NavigationMenuLink>
-              <NavigationMenuLink>Withdrawal</NavigationMenuLink>
-              <NavigationMenuLink>Transfer</NavigationMenuLink>
-            </NavigationMenuContent>
+            <NavigationMenuLink className={navigationMenuTriggerStyle()} render={<NavLink to="/history" />}>
+              Statements
+            </NavigationMenuLink>
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuLink
-              className={navigationMenuTriggerStyle()}
-              render={<Link to="/history" />}
-            >
-              Transaction History
-            </NavigationMenuLink>
+            <NavigationMenuTrigger>
+              <NavLink to="/transaction">New Transaction</NavLink>
+            </NavigationMenuTrigger>
+            <NavigationMenuContent>
+              <NavigationMenuLink render={<NavLink to="/transaction/deposit" />}>Deposit</NavigationMenuLink>
+              <NavigationMenuLink render={<NavLink to="/transaction/withdrawal" />}>Withdrawal</NavigationMenuLink>
+              <NavigationMenuLink render={<NavLink to="/transaction/transfer" />}>Transfer</NavigationMenuLink>
+            </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
@@ -66,41 +65,41 @@ const NavBar = () => {
       <NavigationMenu>
         <NavigationMenuList>
           <NavigationMenuItem>
-            <NavigationMenuTrigger className="gap-2">
+            <NavigationMenuTrigger className="gap-4">
               <Avatar>
-                <AvatarFallback>
-                  {initials}
-                </AvatarFallback>
+                <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
-              <span>
-                {user?.firstName + " " + user?.lastName?.charAt(0) + "."}
-              </span>
+              <div>
+                <div className="font-bold text-left text-xs">
+                  {user?.firstName + " " + user?.lastName?.charAt(0) + "."}
+                </div>
+                <div className="text-xs opacity-60">Personal Account</div>
+              </div>
             </NavigationMenuTrigger>
             <NavigationMenuContent>
               <NavigationMenuLink>Settings</NavigationMenuLink>
-              <AlertDialog>
-                <AlertDialogTrigger render={<NavigationMenuLink />}>
-                  Sign Out
-                </AlertDialogTrigger>
-                <AlertDialogContent size="sm">
-                  <AlertDialogHeader>
-                    <AlertDialogTitle>
-                      Are you sure you want to sign out?
-                    </AlertDialogTitle>
-                  </AlertDialogHeader>
-                  <AlertDialogFooter>
-                    <AlertDialogCancel>Cancel</AlertDialogCancel>
-                    <AlertDialogAction variant="destructive" onClick={logout}>
-                      Sign Out
-                    </AlertDialogAction>
-                  </AlertDialogFooter>
-                </AlertDialogContent>
-              </AlertDialog>
+              <NavigationMenuLink render={<button type="button" />} onClick={() => setSignOutOpen(true)}>
+                Sign Out
+              </NavigationMenuLink>
             </NavigationMenuContent>
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      {/* <Button onClick={logout} variant="outline">Sign Out</Button> */}
+
+      {/* Dialog lives outside the menu, so closing the menu doesn't unmount it */}
+      <AlertDialog open={signOutOpen} onOpenChange={setSignOutOpen}>
+        <AlertDialogContent size="sm">
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure you want to sign out?</AlertDialogTitle>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction variant="destructive" onClick={logout}>
+              Sign Out
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -17,6 +17,10 @@ const Login = () => {
   const [lastName, setLastName] = useState<string>("");
   const [loginFailed, setLoginFailed] = useState<boolean>(false);
   const [signupFailed, setSignupFailed] = useState<boolean>(false);
+
+  useEffect(() => {
+    document.title = `${isSigningUp ? "Sign Up" : "Sign In"} | Bank of CLI`;
+  }, [isSigningUp]);
 
   const { login, signup } = useAuth();
 

@@ -1,28 +1,35 @@
 .banner {
-    background-image: url('../../assets/buildings.png');
-    height: 20rem;
-    max-width: 80%;
-    border-radius: 2rem;
-    background-size: 100% auto; 
-    background-position: center center;
+  background-image: url("../../assets/buildings.png");
+  height: 20rem;
+  max-width: 80%;
+  border-radius: 2rem;
+  background-size: 100% auto;
+  background-position: center center;
 }
 
 .container {
-    display: flex;
-    width: 100%;
-    padding: 2rem;
-    flex-direction: column;
-    gap: 2rem;
-    background-color: rgb(247, 244, 244);
-    height: 100dvh;
+  display: flex;
+  width: 100%;
+  padding: 2rem;
+  flex-direction: column;
+  gap: 2rem;
+  height: 90dvh;
+  overflow: hidden;
+  scrollbar-width: none;
 }
 
 .serif {
-    font-family:Georgia, 'Times New Roman', Times, serif;
-    font-size: 2rem;
+  font-family: Times, serif;
+  font-size: 1.5rem;
+  font-weight: 100;
+}
+
+.cash {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 2rem;
 }
 
 .buttons {
-    display: flex;
-    gap: .5rem;
+  display: flex;
+  gap: 0.5rem;
 }

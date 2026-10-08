@@ -25,12 +25,17 @@ export const getDate = () => {
     day: "numeric",
   });
   return formatted;
-}
-export const getStringFromDate = (date : Date) => {
-// todo:
-}
+};
+export const getStringFromDate = (date: Date) => {
+  // todo:
+};
 
-export const getDateFromString = (s : string) => {
-  const [year, month, day] = s.split('-').map(Number);
-  return new Date(year, month - 1, day); 
-}
+export const getDateFromString = (s: string) => {
+  const [year, month, day] = s.split("-").map(Number);
+  return new Date(year, month - 1, day);
+};
+
+export const capitalize = (s: string) => {
+  s = s.charAt(0).toUpperCase() + s.slice(1);
+  return s;
+};

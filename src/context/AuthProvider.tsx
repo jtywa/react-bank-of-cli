@@ -5,16 +5,20 @@ import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { generateCardNumber } from "@/utils/utils";
 import { useMemo } from "react";
+import { getDateFromString } from "@/utils/utils";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [users, setUsers] = useState<User[]>(db.users);
   const [allTransactions, setAllTransactions] = useState<Transaction[]>(db.transactions);
 
-  const transactions = useMemo(
-    () => (user ? allTransactions.filter((t) => t.from === user.id || t.to === user.id) : []),
-    [allTransactions, user]
-  );
+  const transactions = useMemo(() => {
+    if (!user) return [];
+
+    return allTransactions
+      .filter((t) => t.from === user.id || t.to === user.id)
+      .sort((a, b) => getDateFromString(b.date).getTime() - getDateFromString(a.date).getTime());
+  }, [allTransactions, user]);
 
   const login = (username: string, password: string) => {
     const foundUser = users.find((u: User) => u.username === username && u.password === password);
