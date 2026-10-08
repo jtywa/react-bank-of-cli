@@ -6,7 +6,6 @@ import styles from "./Transaction.module.css";
 import { useEffect } from "react";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
-import { Separator } from "@base-ui/react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 
@@ -99,7 +98,7 @@ const Transaction = () => {
 
                     <CardDescription>
                       {Number(amount) > 0
-                        ? `Resulting Balance: $${((user?.balance ?? 0) + Number(amount)).toFixed(2)}`
+                        ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
                         : `Current Balance: $${user?.balance}`}
                     </CardDescription>
                   </div>
