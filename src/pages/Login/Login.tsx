@@ -6,6 +6,7 @@ import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useState, useEffect } from "react";
+import { Spinner } from "@/components/ui/spinner";
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -17,6 +18,7 @@ const Login = () => {
   const [lastName, setLastName] = useState<string>("");
   const [loginFailed, setLoginFailed] = useState<boolean>(false);
   const [signupFailed, setSignupFailed] = useState<boolean>(false);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
     document.title = `${isSigningUp ? "Sign Up" : "Sign In"} | Bank of CLI`;
@@ -24,15 +26,23 @@ const Login = () => {
 
   const { login, signup } = useAuth();
 
-  function handleSubmitSignIn(e: React.FormEvent<HTMLFormElement>) {
+  const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("ran handleSubmitSignIn")
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    setIsLoading(false);
     if (!username || !password) return; //show error
     const success = login(username, password);
     if (!success) setLoginFailed(true);
   }
 
-  const handleSubmitSignUp = (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    console.log("ran handleSubmitSignUp")
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 2000))
+    setIsLoading(false);
     // return if any fields empty or pws not matching
     const success = signup(firstName, lastName, email, username, password);
     if (!success) setSignupFailed(true);
@@ -76,6 +86,7 @@ const Login = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
 
@@ -89,6 +100,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
               </div>
@@ -101,8 +113,9 @@ const Login = () => {
           </CardContent>
 
           <CardFooter className="flex-col gap-4">
-            <Button type="submit" form="login-form" className="w-full">
-              Sign in
+            <Button type="submit" form="login-form" className="w-full" disabled={isLoading ? true : false}>
+              {isLoading && <Spinner className="size-6" />}
+              {isLoading ? "Signing in..." : "Sign in"}
             </Button>
 
             <div className="flex w-full items-center gap-3">
@@ -113,7 +126,7 @@ const Login = () => {
 
             <p className="text-sm text-muted-foreground">
               Don't have an account?{" "}
-              <Button onClick={handleFormSwap} variant="link">
+              <Button onClick={handleFormSwap} variant="link" disabled={isLoading ? true : false}>
                 Create an account
               </Button>
             </p>
@@ -128,7 +141,7 @@ const Login = () => {
           <Separator />
 
           <CardContent>
-            <form id="login-form" onSubmit={handleSubmitSignUp}>
+            <form id="signup-form" onSubmit={handleSubmitSignUp}>
               <div className="flex flex-col gap-3">
                 <div className="grid gap-1">
                   <Label htmlFor="firstName">First Name</Label>
@@ -139,6 +152,7 @@ const Login = () => {
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
 
@@ -151,6 +165,7 @@ const Login = () => {
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
 
@@ -163,6 +178,7 @@ const Login = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
 
@@ -175,6 +191,7 @@ const Login = () => {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
 
@@ -188,6 +205,7 @@ const Login = () => {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
 
@@ -200,6 +218,7 @@ const Login = () => {
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
+                    disabled={isLoading ? true : false}
                   />
                 </div>
               </div>
@@ -212,13 +231,14 @@ const Login = () => {
           </CardContent>
 
           <CardFooter className="flex-col gap-4">
-            <Button type="submit" form="login-form" className="w-full">
-              Sign up
+            <Button type="submit" form="signup-form" className="w-full" disabled={isLoading ? true : false}>
+              {isLoading && <Spinner className="size-6" />}
+              {isLoading ? "Signing up..." : "Sign up"}
             </Button>
 
             <p className="text-sm text-muted-foreground">
               Already have an account?{" "}
-              <Button onClick={handleFormSwap} variant="link">
+              <Button onClick={handleFormSwap} variant="link" disabled={isLoading ? true : false}>
                 Sign in
               </Button>
             </p>
