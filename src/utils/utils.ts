@@ -42,3 +42,8 @@ export const capitalize = (s: string) => {
 export const money = (amount: string | number) => {
   return `$${Number(amount).toFixed(2)}`;
 };
+
+export const isValidAmount = (amount: string | number, balance?: string | number) => {
+  if (balance) return Number(amount) > 0 && Number.isFinite(Number(amount)) && Number(amount) <= Number(balance);
+  return Number(amount) > 0 && Number.isFinite(Number(amount));
+};

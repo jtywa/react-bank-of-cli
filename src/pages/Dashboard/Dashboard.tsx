@@ -1,5 +1,5 @@
 import { useAuth } from "@/context/AuthContext";
-import { getDate } from "@/utils/utils";
+import { capitalize, getDate } from "@/utils/utils";
 import styles from "./Dashboard.module.css";
 import { Card, CardHeader, CardTitle, CardContent, CardDescription, CardAction } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -28,7 +28,7 @@ const Dashboard = () => {
         <CardHeader></CardHeader>
         <CardContent className="flex flex-col gap-2">
           <div className="text-[10px] opacity-50">{getDate().toUpperCase()}</div>
-          <div className={styles.serif}>Welcome back, {user?.firstName}.</div>
+          <div className={styles.serif}>Welcome back, {user && capitalize(user.firstName)}.</div>
         </CardContent>
       </Card>
 

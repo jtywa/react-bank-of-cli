@@ -1,11 +1,9 @@
-import { useState } from "react";
 import db from "@/data/db.json";
 import type { User, Transaction } from "@/types/Types";
+import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-import { generateCardNumber } from "@/utils/utils";
-import { useMemo } from "react";
-import { getDateFromString } from "@/utils/utils";
+import { generateCardNumber, getDateFromString, isValidAmount } from "@/utils/utils";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>(db.users);
@@ -34,30 +32,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserId(null);
   };
 
-  const deposit = (amount: number) => {
-    if (amount <= 0 || !user || !Number.isFinite(Number(amount))) return false;
-    const newBalance = user.balance + amount;
+  const updateBalance = (id: number, newBalance: number) => {
     setUsers((prev) =>
       prev.map((account) => (account.id === user?.id ? { ...account, balance: newBalance } : account)),
     );
-    console.log();
+  };
+
+  const deposit = (amount: number) => {
+    if (!isValidAmount(amount) || !user) return false;
+    updateBalance(user.id, user.balance + amount);
     return true;
   };
 
   const withdraw = (amount: number) => {
-    if (!user || !Number.isFinite(Number(amount))) return false;
     const balance = user ? user.balance : 0;
-    if (amount > balance) return false;
-    const newBalance = user.balance - amount;
-    setUsers((prev) =>
-      prev.map((account) => (account.id === user?.id ? { ...account, balance: newBalance } : account)),
-    );
+    if (!isValidAmount(amount, balance) || !user) return false;
+    updateBalance(user.id, user.balance - amount);
     return true;
   };
 
   const transfer = (amount: number, recipient: string) => {
-    if (!user || !Number.isFinite(Number(amount))) return false;
-    if (amount <= 0 || amount > user.balance) return false;
+    const balance = user ? user.balance : 0;
+    if (!user || !isValidAmount(amount, balance)) return false;
 
     const otherUser = users.find((u: User) => u.username === recipient || u.email === recipient);
     if (!otherUser || otherUser.id === user.id) return false;

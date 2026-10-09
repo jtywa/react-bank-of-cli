@@ -10,7 +10,7 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
-import { money } from "@/utils/utils";
+import { isValidAmount, money } from "@/utils/utils";
 
 const Transaction = () => {
   const { chosenType } = useParams();
@@ -178,7 +178,7 @@ const Transaction = () => {
                     </div>
 
                     <div className="grid gap-2">
-                      <Label htmlFor="user">To User</Label>
+                      <Label htmlFor="user">Recipient (Username or Email)</Label>
                       <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} name="user" type="text" />
                     </div>
 
@@ -197,8 +197,11 @@ const Transaction = () => {
               </CardContent>
 
               <CardFooter className="flex-col gap-4">
-                <Button type="submit" form="transfer-form" className="w-1/3">
-                  Transfer {Number(amount) > 0 && `$${amount}`} {recipient && `to ${recipient}`}
+                <Button type="submit" form="transfer-form" className="w-1/3" disabled={isLoading ? true : false}>
+                  {isLoading && <Spinner className="size-6" />}
+                  {isLoading
+                    ? `Transferring ${isValidAmount(amount) && recipient ? `${money(amount)} to ${recipient}` : ""}`
+                    : "Transfer"}
                 </Button>
               </CardFooter>
             </Card>

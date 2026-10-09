@@ -1,6 +1,7 @@
 import { Link, NavLink } from "react-router-dom";
 import styles from "./NavBar.module.css";
 import { useState } from "react";
+import { capitalize } from "@/utils/utils";
 import {
   NavigationMenu,
   NavigationMenuContent,
@@ -25,7 +26,7 @@ import { Avatar, AvatarFallback } from "../ui/avatar";
 const NavBar = () => {
   const { logout, user } = useAuth();
   const [signOutOpen, setSignOutOpen] = useState(false);
-  const initials = `${user?.firstName?.charAt(0)}${user?.lastName?.charAt(0)}`;
+  const initials = `${user?.firstName?.charAt(0).toUpperCase()}${user?.lastName?.charAt(0).toUpperCase()}`;
 
   return (
     <div className={styles.NavBar}>
@@ -69,7 +70,7 @@ const NavBar = () => {
               </Avatar>
               <div>
                 <div className="font-bold text-left text-xs">
-                  {user?.firstName + " " + user?.lastName?.charAt(0) + "."}
+                  {`${user && capitalize(user.firstName)} ${user?.lastName?.charAt(0).toUpperCase()}.`}
                 </div>
                 <div className="text-xs opacity-60">Personal Account</div>
               </div>
