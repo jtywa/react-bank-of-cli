@@ -7,6 +7,7 @@ interface AuthContextType {
   logout: () => void;
   deposit: (amount: number) => boolean;
   withdraw: (amount: number) => boolean;
+  transfer: (amount: number, recipient: string) => boolean;
   users: User[];
   setUsers: React.Dispatch<User[]>;
   transactions: Transaction[];

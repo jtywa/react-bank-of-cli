@@ -28,20 +28,20 @@ const Login = () => {
 
   const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("ran handleSubmitSignIn")
+    console.log("ran handleSubmitSignIn");
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
     if (!username || !password) return; //show error
     const success = login(username, password);
     if (!success) setLoginFailed(true);
-  }
+  };
 
   const handleSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("ran handleSubmitSignUp")
+    console.log("ran handleSubmitSignUp");
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500))
+    await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
     // return if any fields empty or pws not matching
     const success = signup(firstName, lastName, email, username, password);

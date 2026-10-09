@@ -3,13 +3,7 @@ import TransactionTable from "@/components/TransactionTable/TransactionTable";
 import { useAuth } from "@/context/AuthContext";
 import type { Transaction } from "@/types/Types";
 import { useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/card";
 import {
   Pagination,
   PaginationContent,
@@ -33,7 +27,7 @@ const History = () => {
     document.title = "Transaction History | Bank of CLI";
     const timer = setTimeout(() => {
       setIsLoading(false);
-    }, 1500);
+    }, 1000);
     return () => clearTimeout(timer);
   }, []);
 
@@ -44,10 +38,7 @@ const History = () => {
           <CardTitle>Transaction History</CardTitle>
         </CardHeader>
         <CardContent>
-          <TransactionTable
-            isLoading={isLoading}
-            transactions={getPageItems(transactions, page)}
-          ></TransactionTable>
+          <TransactionTable isLoading={isLoading} transactions={getPageItems(transactions, page)}></TransactionTable>
         </CardContent>
         <CardFooter>
           <Pagination>
@@ -93,9 +84,7 @@ const History = () => {
                     setPage((p) => Math.min(totalPages, p + 1));
                   }}
                   aria-disabled={page === totalPages}
-                  className={
-                    page === totalPages ? "pointer-events-none opacity-50" : ""
-                  }
+                  className={page === totalPages ? "pointer-events-none opacity-50" : ""}
                 />
               </PaginationItem>
             </PaginationContent>
@@ -107,20 +96,13 @@ const History = () => {
 };
 export default History;
 
-function getPageItems(
-  array: Transaction[],
-  page: number,
-  pageSize = PAGE_SIZE,
-) {
+function getPageItems(array: Transaction[], page: number, pageSize = PAGE_SIZE) {
   const start = (page - 1) * pageSize;
   const end = start + pageSize;
   return array.slice(start, end);
 }
 
-function getPageNumbers(
-  current: number,
-  total: number,
-): (number | "ellipsis")[] {
+function getPageNumbers(current: number, total: number): (number | "ellipsis")[] {
   if (total <= 7) {
     return Array.from({ length: total }, (_, i) => i + 1);
   }

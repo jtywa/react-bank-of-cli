@@ -8,12 +8,9 @@ import { useMemo } from "react";
 import { getDateFromString } from "@/utils/utils";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [users, setUsers] = useState<User[]>(db.users);
-    const [userId, setUserId] = useState<number | null>(null);
-    const user = useMemo(
-      () => users.find(u => u.id === userId) ?? null,
-      [users, userId]
-    );
+  const [users, setUsers] = useState<User[]>(db.users);
+  const [userId, setUserId] = useState<number | null>(null);
+  const user = useMemo(() => users.find((u) => u.id === userId) ?? null, [users, userId]);
   const [allTransactions, setAllTransactions] = useState<Transaction[]>(db.transactions);
 
   const transactions = useMemo(() => {
@@ -37,31 +34,46 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUserId(null);
   };
 
-  const deposit = (amount : number) => {
+  const deposit = (amount: number) => {
     if (amount <= 0 || !user || !Number.isFinite(Number(amount))) return false;
     const newBalance = user.balance + amount;
-    setUsers(prev =>
-      prev.map(account =>
-        account.id === user?.id
-          ? { ...account, balance: newBalance }
-          : account
-      ))
-      console.log()
-      return true;
+    setUsers((prev) =>
+      prev.map((account) => (account.id === user?.id ? { ...account, balance: newBalance } : account)),
+    );
+    console.log();
+    return true;
   };
 
-    const withdraw = (amount : number) => {
-      if (!user || !Number.isFinite(Number(amount))) return false;
-      const balance = user ? user.balance : 0;
-      if (amount > balance) return false;
-      const newBalance = user.balance - amount;
-      setUsers(prev =>
-        prev.map(account =>
-          account.id === user?.id
-            ? { ...account, balance: newBalance }
-            : account
-        ))
-      return true;
+  const withdraw = (amount: number) => {
+    if (!user || !Number.isFinite(Number(amount))) return false;
+    const balance = user ? user.balance : 0;
+    if (amount > balance) return false;
+    const newBalance = user.balance - amount;
+    setUsers((prev) =>
+      prev.map((account) => (account.id === user?.id ? { ...account, balance: newBalance } : account)),
+    );
+    return true;
+  };
+
+  const transfer = (amount: number, recipient: string) => {
+    if (!user || !Number.isFinite(Number(amount))) return false;
+    if (amount <= 0 || amount > user.balance) return false;
+
+    const otherUser = users.find((u: User) => u.username === recipient || u.email === recipient);
+    if (!otherUser || otherUser.id === user.id) return false;
+
+    setUsers((prev) =>
+      prev.map((account) => {
+        if (account.id === user.id) {
+          return { ...account, balance: account.balance - amount };
+        }
+        if (account.id === otherUser.id) {
+          return { ...account, balance: account.balance + amount };
+        }
+        return account;
+      }),
+    );
+    return true;
   };
 
   const signup = (firstName: string, lastName: string, email: string, username: string, password: string) => {
@@ -90,12 +102,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user, login, logout, signup, deposit, withdraw, users, setUsers, transactions, setAllTransactions, isLoggedIn: !!user }}
+      value={{
+        user,
+        login,
+        logout,
+        signup,
+        deposit,
+        withdraw,
+        transfer,
+        users,
+        setUsers,
+        transactions,
+        setAllTransactions,
+        isLoggedIn: !!user,
+      }}
     >
       {children}
     </AuthContext.Provider>
   );
 };
-
 
 // todo: should probably make setters for data private

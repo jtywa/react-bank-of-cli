@@ -26,9 +26,8 @@ export const getDate = () => {
   });
   return formatted;
 };
-export const getStringFromDate = (date: Date) => {
-  // todo:
-};
+
+// export const getStringFromDate = (date: Date) => {};
 
 export const getDateFromString = (s: string) => {
   const [year, month, day] = s.split("-").map(Number);
@@ -38,4 +37,8 @@ export const getDateFromString = (s: string) => {
 export const capitalize = (s: string) => {
   s = s.charAt(0).toUpperCase() + s.slice(1);
   return s;
+};
+
+export const money = (amount: string | number) => {
+  return `$${Number(amount).toFixed(2)}`;
 };

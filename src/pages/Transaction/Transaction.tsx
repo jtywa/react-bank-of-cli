@@ -1,13 +1,6 @@
 import { useParams } from "react-router-dom";
 import { useState } from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardDescription,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
+import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import styles from "./Transaction.module.css";
 import { useEffect } from "react";
@@ -16,60 +9,50 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/spinner";
-import { toast } from "@/components/ui/toast"
+import { popToast } from "@/lib/popToast";
+import { money } from "@/utils/utils";
 
 const Transaction = () => {
   const { chosenType } = useParams();
-  const [transactionType, setTransactionType] = useState(
-    chosenType || "deposit",
-  );
-  const { user, deposit, withdraw } = useAuth();
+  const [transactionType, setTransactionType] = useState(chosenType || "deposit");
+  const { user, deposit, withdraw, transfer } = useAuth();
   const [amount, setAmount] = useState<string>("");
   const [recipient, setRecipient] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  const clearFields = () => {
+    setAmount("");
+    setRecipient("");
+  };
+
   const handleDeposit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("ran handleDeposit");
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
     const success = deposit(Number(amount));
-    if (success){
-      setAmount("");
-      toast.add({
-        type: "success",
-        title: "Deposit Successful!",
-  }) }
-  else {
-      toast.add({
-        type: "error",
-        title: "Deposit Failed",
-    });
-    }
-    console.log(success ? "deposit succeeded" : "deposit failed");
+    if (success) clearFields();
+    popToast(success, "Deposit successful!", "Deposit failed");
   };
 
-    const handleWithdrawal = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleWithdrawal = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("ran handleWithdrawal");
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
     const success = withdraw(Number(amount));
-    if (success){
-      setAmount("")
-      toast.add({
-        type: "success",
-        title: "Withdrawal Successful!",
-  })
-    } else {
-      toast.add({
-        type: "error",
-        title: "Withdrawal Failed",
-    });
-  }
-    console.log(success ? "withdrawal succeeded" : "withdrawal failed");
+    if (success) clearFields();
+    popToast(success, "Withdrawal successful!", "Withdrawal failed");
+  };
+
+  const handleTransfer = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    setIsLoading(true);
+    await new Promise((resolve) => setTimeout(resolve, 1000));
+    setIsLoading(false);
+    const success = transfer(Number(amount), recipient);
+    if (success) clearFields();
+    popToast(success, "Transfer successful!", "Transfer failed");
   };
 
   useEffect(() => {
@@ -79,28 +62,15 @@ const Transaction = () => {
     <div className={styles.container}>
       <Card className="min-w-1/2 max-w-[600px]">
         <CardHeader className="flex justify-center flex-col items-center">
-          <CardTitle className="self-start">New Transaction</CardTitle>
           <Tabs defaultValue={transactionType}>
             <TabsList className="gap-1">
-              <TabsTrigger
-                className="min-w-24"
-                value="deposit"
-                onClick={() => setTransactionType("deposit")}
-              >
+              <TabsTrigger className="min-w-24" value="deposit" onClick={() => setTransactionType("deposit")}>
                 Deposit
               </TabsTrigger>
-              <TabsTrigger
-                className="min-w-24"
-                value="withdrawal"
-                onClick={() => setTransactionType("withdrawal")}
-              >
+              <TabsTrigger className="min-w-24" value="withdrawal" onClick={() => setTransactionType("withdrawal")}>
                 Withdrawal
               </TabsTrigger>
-              <TabsTrigger
-                className="min-w-24"
-                value="transfer"
-                onClick={() => setTransactionType("transfer")}
-              >
+              <TabsTrigger className="min-w-24" value="transfer" onClick={() => setTransactionType("transfer")}>
                 Transfer
               </TabsTrigger>
             </TabsList>
@@ -118,10 +88,7 @@ const Transaction = () => {
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
                       <Label htmlFor="account">To Account</Label>
-                      <Input
-                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
-                        disabled
-                      />
+                      <Input placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`} disabled />
                     </div>
 
                     <div className="grid gap-2">
@@ -136,8 +103,8 @@ const Transaction = () => {
                     </div>
                     <CardDescription>
                       {Number(amount) > 0 && Number.isFinite(Number(amount))
-                        ? `Resulting Balance: $${((user?.balance ?? 0) + Number(amount)).toFixed(2)}`
-                        : `Current Balance: $${user?.balance.toFixed(2)}`}
+                        ? `Resulting Balance: ${money((user?.balance ?? 0) + Number(amount))}`
+                        : `Current Balance: ${user && money(user.balance)}`}
                     </CardDescription>
                   </div>
                 </form>
@@ -146,7 +113,7 @@ const Transaction = () => {
               <CardFooter className="flex-col gap-4">
                 <Button type="submit" form="deposit-form" className="w-1/3" disabled={isLoading ? true : false}>
                   {isLoading && <Spinner className="size-6" />}
-              {isLoading ? "Depositing..." : "Deposit"}
+                  {isLoading ? "Depositing..." : "Deposit"}
                 </Button>
               </CardFooter>
             </Card>
@@ -182,8 +149,8 @@ const Transaction = () => {
 
                     <CardDescription>
                       {Number(amount) > 0 && Number.isFinite(Number(amount))
-                        ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
-                        : `Current Balance: $${user?.balance.toFixed(2)}`}
+                        ? `Resulting Balance: ${money((user?.balance ?? 0) - Number(amount))}`
+                        : `Current Balance: ${user && money(user.balance)}`}
                     </CardDescription>
                   </div>
                 </form>
@@ -192,7 +159,7 @@ const Transaction = () => {
               <CardFooter className="flex-col gap-4">
                 <Button type="submit" form="withdrawal-form" className="w-1/3" disabled={isLoading ? true : false}>
                   {isLoading && <Spinner className="size-6" />}
-              {isLoading ? "Withdrawing..." : "Withdraw"}
+                  {isLoading ? "Withdrawing..." : "Withdraw"}
                 </Button>
               </CardFooter>
             </Card>
@@ -203,41 +170,27 @@ const Transaction = () => {
               </CardHeader>
 
               <CardContent className="min-h-[240px]">
-                <form id="transfer-form">
+                <form id="transfer-form" onSubmit={handleTransfer}>
                   <div className="flex flex-col gap-5">
                     <div className="grid gap-2">
                       <Label htmlFor="from">From Account</Label>
-                      <Input
-                        name="from"
-                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
-                        disabled
-                      />
+                      <Input name="from" placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`} disabled />
                     </div>
 
                     <div className="grid gap-2">
                       <Label htmlFor="user">To User</Label>
-                      <Input
-                        value={recipient}
-                        onChange={(e) => setRecipient(e.target.value)}
-                        name="user"
-                        type="text"
-                      />
+                      <Input value={recipient} onChange={(e) => setRecipient(e.target.value)} name="user" type="text" />
                     </div>
 
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
-                      <Input
-                        name="amount"
-                        type="text"
-                        value={amount}
-                        onChange={(e) => setAmount(e.target.value)}
-                      />
+                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
                     </div>
 
                     <CardDescription>
                       {Number(amount) > 0
-                        ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
-                        : `Current Balance: $${user?.balance.toFixed(2)}`}
+                        ? `Resulting Balance: ${money((user?.balance ?? 0) - Number(amount))}`
+                        : `Current Balance: ${user && money(user.balance)}`}
                     </CardDescription>
                   </div>
                 </form>
@@ -245,8 +198,7 @@ const Transaction = () => {
 
               <CardFooter className="flex-col gap-4">
                 <Button type="submit" form="transfer-form" className="w-1/3">
-                  Transfer {Number(amount) > 0 && `$${amount}`}{" "}
-                  {recipient && `to ${recipient}`}
+                  Transfer {Number(amount) > 0 && `$${amount}`} {recipient && `to ${recipient}`}
                 </Button>
               </CardFooter>
             </Card>
