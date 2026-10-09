@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
 import { generateCardNumber, getDateFromString, isValidAmount } from "@/utils/utils";
+import { getStringFromDate } from "@/utils/utils";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>(db.users);
@@ -41,6 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const deposit = (amount: number) => {
     if (!isValidAmount(amount) || !user) return false;
     updateBalance(user.id, user.balance + amount);
+    logTransaction("deposit", amount, null, user.username);
     return true;
   };
 
@@ -48,6 +50,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const balance = user ? user.balance : 0;
     if (!isValidAmount(amount, balance) || !user) return false;
     updateBalance(user.id, user.balance - amount);
+    logTransaction("withdrawal", amount, user.username);
     return true;
   };
 
@@ -69,6 +72,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return account;
       }),
     );
+    logTransaction("transfer", amount, user.username, recipient);
     return true;
   };
 
@@ -94,6 +98,37 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUsers((prev: User[]) => [...prev, newUser]);
 
     return true;
+  };
+
+  const getUserId = (value: string) => {
+    const foundUser = users.find((u: User) => u.username === value);
+    if (foundUser) return foundUser.id;
+    const foundUserByEmail = users.find((u: User) => u.email === value);
+    if (foundUserByEmail) return foundUserByEmail.id;
+    return null;
+  };
+
+  const logTransaction = (type: string, amount: number, from?: string | null, to?: string | null) => {
+    const fromId = from ? getUserId(from) : null;
+    const toId = to ? getUserId(to) : null;
+    const transactionId = Date.now();
+    const now = getStringFromDate(new Date());
+
+    let t: Transaction;
+    switch (type) {
+      case "deposit":
+        t = { id: transactionId, type: "deposit", amount: amount, from: null, to: toId, date: now };
+        break;
+      case "withdrawal":
+        t = { id: transactionId, type: "withdrawal", amount: amount, from: fromId, to: null, date: now };
+        break;
+      case "transfer":
+        t = { id: transactionId, type: "transfer", amount: amount, from: fromId, to: toId, date: now };
+        break;
+      default:
+        break;
+    }
+    setAllTransactions((prev: Transaction[]) => [...prev, t]);
   };
 
   return (

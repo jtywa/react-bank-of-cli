@@ -27,7 +27,14 @@ export const getDate = () => {
   return formatted;
 };
 
-// export const getStringFromDate = (date: Date) => {};
+export const getStringFromDate = (date: Date) => {
+  const string = new Intl.DateTimeFormat("fr-CA", {
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+  return string;
+};
 
 export const getDateFromString = (s: string) => {
   const [year, month, day] = s.split("-").map(Number);

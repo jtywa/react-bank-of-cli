@@ -7,6 +7,7 @@ import { useAuth } from "@/context/AuthContext";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
+import { popToast } from "@/lib/popToast";
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -46,6 +47,8 @@ const Login = () => {
     // return if any fields empty or pws not matching
     const success = signup(firstName, lastName, email, username, password);
     if (!success) setSignupFailed(true);
+    if (success) setIsSigningUp(false);
+    popToast(success, "Acount Creation Successful!", "Account Creation Failed");
   };
 
   const handleFormSwap = () => {
