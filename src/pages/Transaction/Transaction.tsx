@@ -76,7 +76,7 @@ const Transaction = () => {
   }, []);
   return (
     <div className={styles.container}>
-      <Card className="min-w-1/2 max-w-[600px]">
+      <Card className="min-w-[400px] max-w-[90dvh]">
         <CardHeader className="flex justify-center flex-col items-center">
           <Tabs defaultValue={transactionType}>
             <TabsList className="gap-1">
@@ -304,7 +304,7 @@ const Transaction = () => {
                 >
                   {isLoading && <Spinner className="size-6" />}
                   {isLoading
-                    ? `Transferring ${isValidAmount(amount) && recipient ? `${money(amount)} to ${recipient}` : ""}`
+                    ? "Transferring"
                     : "Transfer"}
                 </Button>
               </CardFooter>

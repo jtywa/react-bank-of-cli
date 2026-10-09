@@ -19,7 +19,7 @@ const TransactionTable = ({ transactions, isLoading }: TransactionTableProps) =>
   const { user } = useAuth();
 
   return (
-    <Card className="min-h-[370px]">
+    <Card className="min-h-[370px] max-w-[90dvw]">
       <CardContent>
         <Table>
           <TableHeader>

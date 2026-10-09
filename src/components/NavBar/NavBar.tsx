@@ -31,7 +31,7 @@ const NavBar = () => {
   return (
     <div className={styles.NavBar}>
       <Link to="/">
-        <div className="border-t-1 border-b-1 py-[2px] border-black hover:opacity-60">
+        <div className="no-mobile border-t-1 border-b-1 py-[2px] border-black hover:opacity-60">
           <div className={styles.logo}>Bank of CLI</div>
         </div>
       </Link>
@@ -51,7 +51,7 @@ const NavBar = () => {
           </NavigationMenuItem>
 
           <NavigationMenuItem>
-            <NavigationMenuTrigger>New Transaction</NavigationMenuTrigger>
+            <NavigationMenuTrigger>Transaction</NavigationMenuTrigger>
             <NavigationMenuContent>
               <NavigationMenuLink render={<NavLink to="/transaction/deposit" />}>Deposit</NavigationMenuLink>
               <NavigationMenuLink render={<NavLink to="/transaction/withdrawal" />}>Withdrawal</NavigationMenuLink>
@@ -68,7 +68,7 @@ const NavBar = () => {
               <Avatar>
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
-              <div>
+              <div className="no-mobile">
                 <div className="font-bold text-left text-xs">
                   {`${user && capitalize(user.firstName)} ${user?.lastName?.charAt(0).toUpperCase()}.`}
                 </div>
