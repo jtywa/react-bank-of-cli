@@ -19,7 +19,7 @@ const Transaction = () => {
   const [amount, setAmount] = useState<string>("");
   const [recipient, setRecipient] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [isValidAmount, setIsValidAmount] = useState<boolean>(false);
+  const [invalidAmount, setInvalidAmount] = useState<boolean>(false);
 
   const clearFields = () => {
     setAmount("");
@@ -55,6 +55,11 @@ const Transaction = () => {
     if (success) clearFields();
     popToast(success, "Transfer successful!", "Transfer failed");
   };
+
+  const handleAmount = () => {
+    if (isValidAmount(amount) || amount === "") setInvalidAmount(true);
+    else setInvalidAmount(false);
+  }
 
   useEffect(() => {
     document.title = "New Transaction | Bank of CLI";
@@ -100,6 +105,7 @@ const Transaction = () => {
                         value={amount}
                         disabled={isLoading ? true : false}
                         onChange={(e) => setAmount(e.target.value)}
+                        className={invalidAmount ? "border-red-500" : ""}
                       />
                     </div>
                     <CardDescription>
@@ -145,6 +151,7 @@ const Transaction = () => {
                         value={amount}
                         disabled={isLoading ? true : false}
                         onChange={(e) => setAmount(e.target.value)}
+                        className={invalidAmount ? "border-red-500" : ""}
                       />
                     </div>
 
@@ -185,7 +192,7 @@ const Transaction = () => {
 
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
-                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} />
+                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} className={invalidAmount ? "border-red-500" : ""}/>
                     </div>
 
                     <CardDescription>
