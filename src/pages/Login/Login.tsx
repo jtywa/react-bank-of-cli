@@ -8,8 +8,10 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
+import { isValidEmail, isValidName, isValidPassword, isValidUsername } from "@/utils/utils";
 
-//todo: make actual conditions for validation messages
+//todo: get email validation working
+//todo: email/username exists validation
 
 const Login = () => {
   const [username, setUsername] = useState<string>("");
@@ -23,6 +25,16 @@ const Login = () => {
   const [signupFailed, setSignupFailed] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
+  // Validated Error States
+  const [invalidFirst, setInvalidFirst] = useState(false);
+  const [invalidLast, setInvalidLast] = useState(false);
+  const [invalidUser, setInvalidUser] = useState(false);
+  const [invalidEmail, setInvalidEmail] = useState(false);
+  const [shortOrLongUser, setShortOrLongUser] = useState(false);
+  const [invalidPassword, setInvalidPassword] = useState(false);
+  const [shortOrLongPassword, setShortOrLongPassword] = useState(false);
+  const [passwordMismatch, setPasswordMismatch] = useState(false);
+
   useEffect(() => {
     document.title = `${isSigningUp ? "Sign Up" : "Sign In"} | Bank of CLI`;
   }, [isSigningUp]);
@@ -31,13 +43,16 @@ const Login = () => {
 
   const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("ran handleSubmitSignIn");
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1000));
     setIsLoading(false);
     if (!username || !password) return; //show error
     const success = login(username, password);
-    if (!success) {
+    if (success) {
+      setUsername("")
+      setPassword("")
+    }
+    else {
       setLoginFailed(true);
       popToast(success, "", "Login Failed");
     }
@@ -45,14 +60,29 @@ const Login = () => {
 
   const handleSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("ran handleSubmitSignUp");
     setIsLoading(true);
     await new Promise((resolve) => setTimeout(resolve, 1500));
     setIsLoading(false);
     // return if any fields empty or pws not matching
     const success = signup(firstName, lastName, email, username, password);
-    if (!success) setSignupFailed(true);
-    if (success) setIsSigningUp(false);
+        if (success) {
+          setIsSigningUp(false);
+          setEmail("")
+          setUsername("")
+          setPassword("")
+          setConfirmPassword("")
+          setFirstName("")
+          setLastName("")
+          setInvalidEmail(false);
+          setInvalidPassword(false);
+          setInvalidFirst(false);
+          setInvalidLast(false);
+          setInvalidPassword(false);
+          setInvalidUser(false);
+          setPasswordMismatch(false);
+        }
+    else setSignupFailed(true);
+
     popToast(success, "Acount Creation Successful!", "Account Creation Failed");
   };
 
@@ -71,6 +101,36 @@ const Login = () => {
     setLastName("");
     setConfirmPassword("");
   };
+
+  const handleFirst = () => {
+    if (!firstName || isValidName(firstName)) setInvalidFirst(false);
+    else setInvalidFirst(true);
+  }
+
+  const handleLast = () => {
+if (!lastName || isValidName(lastName)) setInvalidLast(false);
+    else setInvalidLast(true);
+  }
+
+  const handleEmail = () => {
+    if (!email || isValidEmail(email)) setInvalidEmail(false);
+    else setInvalidEmail(true);
+  }
+
+  const handleUser = () => {
+    if (!username || isValidUsername(username)) setInvalidUser(false);
+    else setInvalidUser(true);
+  }
+
+  const handlePassword = () => {
+    if (confirmPassword !== "" && password !== confirmPassword) setPasswordMismatch(true);
+    else setPasswordMismatch(false);
+    if (password === "" && confirmPassword === "") setPasswordMismatch(false);
+    if (password === "" || confirmPassword === "") setInvalidPassword(false);
+
+    if (isValidPassword(password)) setInvalidPassword(false);
+    else setInvalidPassword(true);
+  }
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
@@ -157,6 +217,7 @@ const Login = () => {
                 <div className="grid gap-1">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
+                  onBlur={handleFirst}
                     id="firstName"
                     name="firstName"
                     type="text"
@@ -164,7 +225,11 @@ const Login = () => {
                     onChange={(e) => setFirstName(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
+                    className={invalidFirst ? "border-red-500" : ""}
                   />
+                  {invalidFirst && <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>First name must be less than 24 characters and contain only letters and - (hyphen) or ' (apostrophe)</AlertTitle>
+                  </Alert>}
                 </div>
 
                 {/* LAST NAME */}
@@ -172,6 +237,7 @@ const Login = () => {
                 <div className="grid gap-1">
                   <Label htmlFor="lastName">Last Name</Label>
                   <Input
+                  onBlur={handleLast}
                     id="lastName"
                     name="lastName"
                     type="text"
@@ -179,7 +245,11 @@ const Login = () => {
                     onChange={(e) => setLastName(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
+                    className={invalidLast ? "border-red-500" : ""}
                   />
+                                    {invalidLast && <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Last name must be less than 24 characters and contain only letters and - (hyphen) or ' (apostrophe)</AlertTitle>
+                  </Alert>}
                 </div>
 
                 {/* EMAIL */}
@@ -187,6 +257,7 @@ const Login = () => {
                 <div className="grid gap-1">
                   <Label htmlFor="email">Email</Label>
                   <Input
+                  onBlur={handleEmail}
                     id="email"
                     name="email"
                     type="email"
@@ -194,20 +265,23 @@ const Login = () => {
                     onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
+                    className={invalidEmail ? "border-red-500" : ""}
                   />
-                </div>
-
-                {signupFailed && (
+                  {invalidEmail && (
                   <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Account with this email already exists</AlertTitle>
+                    <AlertTitle>Email must be valid</AlertTitle>
                   </Alert>
                 )}
+                </div>
+
+
 
                 {/* USERNAME */}
 
                 <div className="grid gap-1">
                   <Label htmlFor="username">Username</Label>
                   <Input
+                  onBlur={handleUser}
                     id="username"
                     name="username"
                     type="text"
@@ -215,12 +289,13 @@ const Login = () => {
                     onChange={(e) => setUsername(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
+                    className={invalidUser ? "border-red-500" : ""}
                   />
                 </div>
 
-                {signupFailed && (
+                {invalidUser && (
                   <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Account with this username already exists</AlertTitle>
+                    <AlertTitle>Username must be alphanumeric, 3-16 characters</AlertTitle>
                   </Alert>
                 )}
 
@@ -229,6 +304,7 @@ const Login = () => {
                 <div className="grid gap-1">
                   <Label htmlFor="password">Password</Label>
                   <Input
+                  onBlur={handlePassword}
                     id="password"
                     name="password"
                     type="password"
@@ -237,6 +313,7 @@ const Login = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
+                    className={invalidPassword || passwordMismatch ? "border-red-500" : ""}
                   />
                 </div>
 
@@ -245,6 +322,7 @@ const Login = () => {
                 <div className="grid gap-1">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
+                  onBlur={handlePassword}
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
@@ -252,18 +330,19 @@ const Login = () => {
                     onChange={(e) => setConfirmPassword(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
+                    className={invalidPassword || passwordMismatch ? "border-red-500" : ""}
                   />
                 </div>
 
-                {signupFailed && (
+                {passwordMismatch && (
                   <Alert className="border-none p-0" variant="destructive">
                     <AlertTitle>Passwords do not match</AlertTitle>
                   </Alert>
                 )}
 
-                {signupFailed && (
+                {invalidPassword && (
                   <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Password must be 8 or more characters</AlertTitle>
+                    <AlertTitle>Password must be between 8-32 characters, with letters, numbers, and the symbols !, # or _ </AlertTitle>
                   </Alert>
                 )}
               </div>

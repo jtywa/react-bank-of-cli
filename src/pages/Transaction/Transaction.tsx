@@ -19,6 +19,7 @@ const Transaction = () => {
   const [amount, setAmount] = useState<string>("");
   const [recipient, setRecipient] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [isValidAmount, setIsValidAmount] = useState<false>(false);
 
   const clearFields = () => {
     setAmount("");

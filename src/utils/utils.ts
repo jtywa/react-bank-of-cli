@@ -1,5 +1,12 @@
+const NAME_MIN_LENGTH = 1;
+const NAME_MAX_LENGTH = 24;
+const USERNAME_MIN_LENGTH = 3;
+const USERNAME_MAX_LENGTH = 16;
+const PASSWORD_MIN_LENGTH = 8;
+const PASSWORD_MAX_LENGTH = 32;
+
 export const isValidEmail = (email: string) => {
-  const emailRegex = /^.+@.+\..+\$/;
+  const emailRegex = /^.+@.+\..+$/;
   return emailRegex.test(email);
 };
 
@@ -60,3 +67,16 @@ export const isToday = (date: string) => {
   console.log(getStringFromDate(new Date()));
   return date === getStringFromDate(new Date());
 };
+
+
+export const isValidName = (name: string) => {
+  return (/^[A-Za-z\s'-]+$/.test(name) && name.length >= NAME_MIN_LENGTH && name.length <= NAME_MAX_LENGTH);
+}
+
+export const isValidUsername = (username: string) => {
+  return (/^[a-zA-Z0-9]+$/.test(username) && username.length >= USERNAME_MIN_LENGTH && username.length <= USERNAME_MAX_LENGTH);
+}
+
+export const isValidPassword = (password: string) => {
+  return (/^[a-zA-Z0-9!_#]+$/.test(password) && password.length >= PASSWORD_MIN_LENGTH && password.length <= PASSWORD_MAX_LENGTH);
+}
