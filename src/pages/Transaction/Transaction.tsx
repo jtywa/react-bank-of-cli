@@ -4,6 +4,7 @@ import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter }
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import styles from "./Transaction.module.css";
 import { useEffect } from "react";
+import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -110,6 +111,9 @@ const Transaction = () => {
                         }}
                         className={invalidAmount ? "border-red-500" : ""}
                       />
+                      {invalidAmount && <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Amount must be a positive value</AlertTitle>
+                  </Alert>}
                     </div>
                     <CardDescription>
                       {Number(amount) > 0 && Number.isFinite(Number(amount))
@@ -159,6 +163,9 @@ const Transaction = () => {
                         }}
                         className={invalidAmount ? "border-red-500" : ""}
                       />
+                      {invalidAmount && <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Amount must be a positive value</AlertTitle>
+                  </Alert>}
                     </div>
 
                     <CardDescription>
@@ -199,6 +206,7 @@ const Transaction = () => {
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
                       <Input name="amount" type="text" value={amount} onChange={(e) => {setAmount(e.target.value); handleAmount()}} className={invalidAmount ? "border-red-500" : ""}/>
+                      {invalidAmount && <Alert className="border-none p-0" variant="destructive"><AlertTitle>Amount must be a positive value</AlertTitle></Alert>}
                     </div>
 
                     <CardDescription>
