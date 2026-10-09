@@ -137,7 +137,7 @@ const Transaction = () => {
                     <CardDescription>
                       {Number(amount) > 0 && Number.isFinite(Number(amount))
                         ? `Resulting Balance: $${((user?.balance ?? 0) + Number(amount)).toFixed(2)}`
-                        : `Current Balance: $${user?.balance}`}
+                        : `Current Balance: $${user?.balance.toFixed(2)}`}
                     </CardDescription>
                   </div>
                 </form>
@@ -183,7 +183,7 @@ const Transaction = () => {
                     <CardDescription>
                       {Number(amount) > 0 && Number.isFinite(Number(amount))
                         ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
-                        : `Current Balance: $${user?.balance}`}
+                        : `Current Balance: $${user?.balance.toFixed(2)}`}
                     </CardDescription>
                   </div>
                 </form>
@@ -237,7 +237,7 @@ const Transaction = () => {
                     <CardDescription>
                       {Number(amount) > 0
                         ? `Resulting Balance: $${((user?.balance ?? 0) - Number(amount)).toFixed(2)}`
-                        : `Current Balance: $${user?.balance}`}
+                        : `Current Balance: $${user?.balance.toFixed(2)}`}
                     </CardDescription>
                   </div>
                 </form>
