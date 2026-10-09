@@ -1,14 +1,7 @@
 import React from "react";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Transaction } from "@/types/Types";
-import { getDateFromString } from "@/utils/utils";
+import { getDateFromString, isToday } from "@/utils/utils";
 import { Badge } from "../ui/badge";
 import styles from "./TransactionTable.module.css";
 import { Card, CardContent } from "../ui/card";
@@ -17,16 +10,12 @@ import { capitalize } from "@/utils/utils";
 import { useAuth } from "@/context/AuthContext";
 import { Skeleton } from "../ui/skeleton";
 
-
 interface TransactionTableProps {
   transactions: Transaction[];
   isLoading?: boolean;
 }
 
-const TransactionTable = ({
-  transactions,
-  isLoading,
-}: TransactionTableProps) => {
+const TransactionTable = ({ transactions, isLoading }: TransactionTableProps) => {
   const { user } = useAuth();
 
   return (
@@ -43,7 +32,7 @@ const TransactionTable = ({
           </TableHeader>
           <TableBody>
             {transactions.map((t) => (
-              <TableRow key={t.id}>
+              <TableRow className={isToday(t.date) ? "opacity-50" : ""} key={t.id}>
                 <TableCell className="font-medium flex gap-4 items-center">
                   {isLoading ? (
                     <Skeleton className="w-[42px] h-[42px] rounded"></Skeleton>
@@ -70,9 +59,7 @@ const TransactionTable = ({
                     ) : (
                       <>
                         <div className="text-sm">{capitalize(t.type)}</div>
-                        <div className="text-[10px] opacity-70">
-                          Checking • {user?.accountNumber?.slice(-4)}
-                        </div>
+                        <div className="text-[10px] opacity-70">Checking • {user?.accountNumber?.slice(-4)}</div>
                       </>
                     )}
                   </div>
@@ -102,8 +89,7 @@ const TransactionTable = ({
                     <Skeleton className="w-[85px] h-[34px] rounded"></Skeleton>
                   ) : (
                     <span>
-                      {getDateFromString(t.date).toDateString() ===
-                      new Date().toDateString() ? (
+                      {isToday(t.date) ? (
                         <Badge className="p-4" variant="ghost">
                           Pending
                         </Badge>
@@ -115,9 +101,12 @@ const TransactionTable = ({
                     </span>
                   )}
                 </TableCell>
-                <TableCell className="text-right">{isLoading ? <Skeleton className="h-[14px] w-[48px] rounded ml-auto"></Skeleton> :
-                  <span>${t.amount.toFixed(2)}</span>}
-                  
+                <TableCell className="text-right">
+                  {isLoading ? (
+                    <Skeleton className="h-[14px] w-[48px] rounded ml-auto"></Skeleton>
+                  ) : (
+                    <span>${t.amount.toFixed(2)}</span>
+                  )}
                 </TableCell>
               </TableRow>
             ))}

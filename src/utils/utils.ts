@@ -54,3 +54,9 @@ export const isValidAmount = (amount: string | number, balance?: string | number
   if (balance) return Number(amount) > 0 && Number.isFinite(Number(amount)) && Number(amount) <= Number(balance);
   return Number(amount) > 0 && Number.isFinite(Number(amount));
 };
+
+export const isToday = (date: string) => {
+  console.log(date);
+  console.log(getStringFromDate(new Date()));
+  return date === getStringFromDate(new Date());
+};
