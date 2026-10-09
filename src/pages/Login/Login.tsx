@@ -9,6 +9,8 @@ import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
 
+//todo: make actual conditions for validation messages
+
 const Login = () => {
   const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -35,7 +37,10 @@ const Login = () => {
     setIsLoading(false);
     if (!username || !password) return; //show error
     const success = login(username, password);
-    if (!success) setLoginFailed(true);
+    if (!success) {
+      setLoginFailed(true);
+      popToast(success, "", "Login Failed");
+    }
   };
 
   const handleSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -108,11 +113,10 @@ const Login = () => {
                 </div>
               </div>
             </form>
-            {loginFailed && (
-              <Alert className="border-none px-0" variant="destructive">
-                <AlertTitle>Login Failed: Username or password incorrect</AlertTitle>
-              </Alert>
-            )}
+
+            <Alert className="border-none px-0" variant="destructive">
+              <AlertTitle className={loginFailed ? "" : "hidden"}>Invalid username or password</AlertTitle>
+            </Alert>
           </CardContent>
 
           <CardFooter className="flex-col gap-4">
@@ -143,9 +147,13 @@ const Login = () => {
 
           <Separator />
 
+          {/* SIGN UP */}
+
           <CardContent>
             <form id="signup-form" onSubmit={handleSubmitSignUp}>
               <div className="flex flex-col gap-3">
+                {/* FIRST NAME */}
+
                 <div className="grid gap-1">
                   <Label htmlFor="firstName">First Name</Label>
                   <Input
@@ -158,6 +166,8 @@ const Login = () => {
                     disabled={isLoading ? true : false}
                   />
                 </div>
+
+                {/* LAST NAME */}
 
                 <div className="grid gap-1">
                   <Label htmlFor="lastName">Last Name</Label>
@@ -172,6 +182,8 @@ const Login = () => {
                   />
                 </div>
 
+                {/* EMAIL */}
+
                 <div className="grid gap-1">
                   <Label htmlFor="email">Email</Label>
                   <Input
@@ -185,6 +197,14 @@ const Login = () => {
                   />
                 </div>
 
+                {signupFailed && (
+                  <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Account with this email already exists</AlertTitle>
+                  </Alert>
+                )}
+
+                {/* USERNAME */}
+
                 <div className="grid gap-1">
                   <Label htmlFor="username">Username</Label>
                   <Input
@@ -197,6 +217,14 @@ const Login = () => {
                     disabled={isLoading ? true : false}
                   />
                 </div>
+
+                {signupFailed && (
+                  <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Account with this username already exists</AlertTitle>
+                  </Alert>
+                )}
+
+                {/* PASSWORD */}
 
                 <div className="grid gap-1">
                   <Label htmlFor="password">Password</Label>
@@ -212,6 +240,8 @@ const Login = () => {
                   />
                 </div>
 
+                {/* CONFIRM PASSWORD */}
+
                 <div className="grid gap-1">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
@@ -224,13 +254,20 @@ const Login = () => {
                     disabled={isLoading ? true : false}
                   />
                 </div>
+
+                {signupFailed && (
+                  <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Passwords do not match</AlertTitle>
+                  </Alert>
+                )}
+
+                {signupFailed && (
+                  <Alert className="border-none p-0" variant="destructive">
+                    <AlertTitle>Password must be 8 or more characters</AlertTitle>
+                  </Alert>
+                )}
               </div>
             </form>
-            {signupFailed && (
-              <Alert className="border-none px-0" variant="destructive">
-                <AlertTitle>Signup Failed: Please review your information</AlertTitle>
-              </Alert>
-            )}
           </CardContent>
 
           <CardFooter className="flex-col gap-4">

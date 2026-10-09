@@ -12,3 +12,7 @@ body {
   overflow: hidden;
   scrollbar-width: none;
 }
+
+.hidden {
+  visibility: hidden;
+}
