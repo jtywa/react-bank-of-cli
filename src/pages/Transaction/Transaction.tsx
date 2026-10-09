@@ -104,7 +104,10 @@ const Transaction = () => {
                         type="text"
                         value={amount}
                         disabled={isLoading ? true : false}
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => {
+                          setAmount(e.target.value)
+                          handleAmount();
+                        }}
                         className={invalidAmount ? "border-red-500" : ""}
                       />
                     </div>
@@ -150,7 +153,10 @@ const Transaction = () => {
                         type="text"
                         value={amount}
                         disabled={isLoading ? true : false}
-                        onChange={(e) => setAmount(e.target.value)}
+                        onChange={(e) => {
+                          setAmount(e.target.value)
+                          handleAmount();
+                        }}
                         className={invalidAmount ? "border-red-500" : ""}
                       />
                     </div>
@@ -192,7 +198,7 @@ const Transaction = () => {
 
                     <div className="grid gap-2">
                       <Label htmlFor="amount">Amount</Label>
-                      <Input name="amount" type="text" value={amount} onChange={(e) => setAmount(e.target.value)} className={invalidAmount ? "border-red-500" : ""}/>
+                      <Input name="amount" type="text" value={amount} onChange={(e) => {setAmount(e.target.value); handleAmount()}} className={invalidAmount ? "border-red-500" : ""}/>
                     </div>
 
                     <CardDescription>
