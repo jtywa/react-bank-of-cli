@@ -14,9 +14,9 @@
       "id": 1,
       "firstName": "Jane",
       "lastName": "Adams",
-      "username": "s",
+      "username": "janeadams",
       "email": "janeadams@gmail.com",
-      "password": "s",
+      "password": "abcd1234",
       "balance": 500.29,
       "accountNumber": "4000329380191984"
     },

@@ -1,5 +1,5 @@
 import { useParams } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   Card,
   CardHeader,
@@ -10,7 +10,6 @@ import {
 } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import styles from "./Transaction.module.css";
-import { useEffect } from "react";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -18,7 +17,9 @@ import { Button } from "@/components/ui/button";
 import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
-import { isValidAmount, money } from "@/utils/utils";
+import { money, sleep } from "@/utils/utils";
+import { isValidAmount } from "@/utils/validation";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Transaction = () => {
   const { chosenType } = useParams();
@@ -29,7 +30,10 @@ const Transaction = () => {
   const [amount, setAmount] = useState<string>("");
   const [recipient, setRecipient] = useState<string>("");
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [invalidAmount, setInvalidAmount] = useState<boolean>(false);
+  
+  const invalidAmount = !!amount && !isValidAmount(amount);
+
+  usePageTitle("New Transaction");
 
   const clearFields = () => {
     setAmount("");
@@ -39,7 +43,7 @@ const Transaction = () => {
   const handleDeposit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await sleep(2000);
     setIsLoading(false);
     const success = deposit(Number(amount));
     if (success) clearFields();
@@ -49,7 +53,7 @@ const Transaction = () => {
   const handleWithdrawal = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await sleep(2000);
     setIsLoading(false);
     const success = withdraw(Number(amount));
     if (success) clearFields();
@@ -59,21 +63,13 @@ const Transaction = () => {
   const handleTransfer = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await sleep(2000);
     setIsLoading(false);
     const success = transfer(Number(amount), recipient);
     if (success) clearFields();
     popToast(success, "Transfer successful!", "Transfer failed");
   };
 
-  const handleAmount = (value: string) => {
-    if (isValidAmount(value) || !amount) setInvalidAmount(false);
-    else setInvalidAmount(true);
-  };
-
-  useEffect(() => {
-    document.title = "New Transaction | Bank of CLI";
-  }, []);
   return (
     <div className={styles.container}>
       <Card className="min-w-[400px] max-w-[90dvh]">
@@ -128,11 +124,10 @@ const Transaction = () => {
                         name="amount"
                         type="text"
                         value={amount}
-                        disabled={isLoading ? true : false}
-                        onChange={(e) => {
-                          setAmount(e.target.value);
-                          handleAmount(e.target.value);
-                        }}
+                        disabled={isLoading}
+                        onChange={(e) => 
+                          setAmount(e.target.value)
+                        }
                         className={invalidAmount ? "border-red-500" : ""}
                       />
                       {invalidAmount && (
@@ -160,7 +155,7 @@ const Transaction = () => {
                   type="submit"
                   form="deposit-form"
                   className="w-1/3"
-                  disabled={isLoading ? true : false}
+                  disabled={isLoading}
                 >
                   {isLoading && <Spinner className="size-6" />}
                   {isLoading ? "Depositing..." : "Deposit"}
@@ -192,11 +187,10 @@ const Transaction = () => {
                         name="amount"
                         type="text"
                         value={amount}
-                        disabled={isLoading ? true : false}
-                        onChange={(e) => {
-                          setAmount(e.target.value);
-                          handleAmount(e.target.value);
-                        }}
+                        disabled={isLoading}
+                        onChange={(e) => 
+                          setAmount(e.target.value)
+                        }
                         className={invalidAmount ? "border-red-500" : ""}
                       />
                       {invalidAmount && (
@@ -225,7 +219,7 @@ const Transaction = () => {
                   type="submit"
                   form="withdrawal-form"
                   className="w-1/3"
-                  disabled={isLoading ? true : false}
+                  disabled={isLoading}
                 >
                   {isLoading && <Spinner className="size-6" />}
                   {isLoading ? "Withdrawing..." : "Withdraw"}
@@ -259,6 +253,7 @@ const Transaction = () => {
                         onChange={(e) => setRecipient(e.target.value)}
                         name="user"
                         type="text"
+                        disabled={isLoading}
                       />
                     </div>
 
@@ -268,10 +263,10 @@ const Transaction = () => {
                         name="amount"
                         type="text"
                         value={amount}
-                        onChange={(e) => {
-                          setAmount(e.target.value);
-                          handleAmount(e.target.value);
-                        }}
+                        disabled={isLoading}
+                        onChange={(e) => 
+                          setAmount(e.target.value)
+                        }
                         className={invalidAmount ? "border-red-500" : ""}
                       />
                       {invalidAmount && (
@@ -300,7 +295,7 @@ const Transaction = () => {
                   type="submit"
                   form="transfer-form"
                   className="w-1/3"
-                  disabled={isLoading ? true : false}
+                  disabled={isLoading}
                 >
                   {isLoading && <Spinner className="size-6" />}
                   {isLoading

@@ -3,8 +3,9 @@ import type { User, Transaction } from "@/types/Types";
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-import { generateCardNumber, getDateFromString, isValidAmount } from "@/utils/utils";
+import { generateCardNumber, getDateFromString } from "@/utils/utils";
 import { getStringFromDate } from "@/utils/utils";
+import { isValidAmount } from "@/utils/validation";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>(db.users);

@@ -8,7 +8,7 @@ import { Alert, AlertTitle } from "@/components/ui/alert";
 import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
-import { isValidEmail, isValidName, isValidPassword, isValidUsername } from "@/utils/utils";
+import { isValidEmail, isValidName, isValidPassword, isValidUsername } from "@/utils/validation";
 
 //todo: get email validation working
 //todo: email/username exists validation
@@ -30,9 +30,7 @@ const Login = () => {
   const [invalidLast, setInvalidLast] = useState(false);
   const [invalidUser, setInvalidUser] = useState(false);
   const [invalidEmail, setInvalidEmail] = useState(false);
-  const [shortOrLongUser, setShortOrLongUser] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
-  const [shortOrLongPassword, setShortOrLongPassword] = useState(false);
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
   useEffect(() => {
@@ -44,7 +42,7 @@ const Login = () => {
   const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
     if (!username || !password) return; //show error
     const success = login(username, password);
@@ -61,7 +59,7 @@ const Login = () => {
   const handleSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await new Promise((resolve) => setTimeout(resolve, 2000));
     setIsLoading(false);
     // return if any fields empty or pws not matching
     const success = signup(firstName, lastName, email, username, password);

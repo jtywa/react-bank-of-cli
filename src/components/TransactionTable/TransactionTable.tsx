@@ -1,4 +1,3 @@
-import React from "react";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Transaction } from "@/types/Types";
 import { getDateFromString, isToday } from "@/utils/utils";
@@ -9,6 +8,8 @@ import { BanknoteArrowUp, BanknoteX, Repeat } from "lucide-react";
 import { capitalize } from "@/utils/utils";
 import { useAuth } from "@/context/AuthContext";
 import { Skeleton } from "../ui/skeleton";
+
+// TODO: add + and -, color to deposit and withdrawal amounts
 
 interface TransactionTableProps {
   transactions: Transaction[];
