@@ -10,7 +10,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>(db.users);
   const [userId, setUserId] = useState<number | null>(null);
   const user = useMemo(() => users.find((u) => u.id === userId) ?? null, [users, userId]);
-  const [allTransactions, setAllTransactions] = useState<Transaction[]>(db.transactions);
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>(
+  db.transactions as Transaction[]
+);
 
   const transactions = useMemo(() => {
     if (!user) return [];
