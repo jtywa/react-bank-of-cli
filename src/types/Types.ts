@@ -11,7 +11,7 @@ export type User = {
 
 export interface Transaction {
   id: number;
-  type: string;
+  type: "deposit" | "withdrawal" | "transfer";  
   amount: number;
   from: number | null;
   to: number | null;

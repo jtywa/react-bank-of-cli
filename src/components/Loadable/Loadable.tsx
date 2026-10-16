@@ -1,7 +1,7 @@
 import { Skeleton } from "../ui/skeleton";
 
 type LoadableProps = {
-  loading: boolean;
+  loading?: boolean;
   skeleton: string; // tailwind classes for the placeholder
   children: React.ReactNode;
 };
