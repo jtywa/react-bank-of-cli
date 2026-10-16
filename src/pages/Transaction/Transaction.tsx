@@ -1,315 +1,174 @@
 import { useParams } from "react-router-dom";
-import { useState, useEffect } from "react";
-import {
-  Card,
-  CardHeader,
-  CardContent,
-  CardDescription,
-  CardTitle,
-  CardFooter,
-} from "@/components/ui/card";
+import { useState } from "react";
+import { Card, CardHeader, CardContent, CardDescription, CardTitle, CardFooter } from "@/components/ui/card";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import styles from "./Transaction.module.css";
 import { Alert, AlertTitle } from "@/components/ui/alert";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/context/AuthContext";
 import { Spinner } from "@/components/ui/spinner";
+import { useAuth } from "@/context/AuthContext";
 import { popToast } from "@/lib/popToast";
 import { money, sleep } from "@/utils/utils";
 import { isValidAmount } from "@/utils/validation";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import styles from "./Transaction.module.css";
+
+const CONFIG = {
+  deposit: {
+    title: "Deposit Funds",
+    accountLabel: "To Account",
+    button: "Deposit",
+    busy: "Depositing...",
+    success: "Deposit successful!",
+    failure: "Deposit failed",
+    sign: 1,
+  },
+  withdrawal: {
+    title: "Withdraw Funds",
+    accountLabel: "From Account",
+    button: "Withdraw",
+    busy: "Withdrawing...",
+    success: "Withdrawal successful!",
+    failure: "Withdrawal failed",
+    sign: -1,
+  },
+  transfer: {
+    title: "Transfer Funds",
+    accountLabel: "From Account",
+    button: "Transfer",
+    busy: "Transferring...",
+    success: "Transfer successful!",
+    failure: "Transfer failed",
+    sign: -1,
+  },
+} as const;
+
+type TransactionType = keyof typeof CONFIG;
+
+const isTransactionType = (value?: string): value is TransactionType => !!value && Object.keys(CONFIG).includes(value);
 
 const Transaction = () => {
-  const { chosenType } = useParams();
-  const [transactionType, setTransactionType] = useState(
-    chosenType || "deposit",
-  );
-  const { user, deposit, withdraw, transfer } = useAuth();
-  const [amount, setAmount] = useState<string>("");
-  const [recipient, setRecipient] = useState<string>("");
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-  
-  const invalidAmount = !!amount && !isValidAmount(amount);
-
   usePageTitle("New Transaction");
+
+  const { chosenType } = useParams();
+  const { user, deposit, withdraw, transfer } = useAuth();
+
+  const [transactionType, setTransactionType] = useState<TransactionType>(
+    isTransactionType(chosenType) ? chosenType : "deposit",
+  );
+  const [amount, setAmount] = useState("");
+  const [recipient, setRecipient] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const cfg = CONFIG[transactionType];
+  const n = Number(amount);
+  const invalidAmount = !!amount && !isValidAmount(amount);
+  const showPreview = n > 0 && Number.isFinite(n);
+  const balance = user?.balance ?? 0;
+  const maskedAccount = `•••• •••• •••• ${user?.accountNumber?.slice(-4)}`;
 
   const clearFields = () => {
     setAmount("");
     setRecipient("");
   };
 
-  const handleDeposit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsLoading(true);
     await sleep(2000);
     setIsLoading(false);
-    const success = deposit(Number(amount));
-    if (success) clearFields();
-    popToast(success, "Deposit successful!", "Deposit failed");
-  };
 
-  const handleWithdrawal = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    await sleep(2000);
-    setIsLoading(false);
-    const success = withdraw(Number(amount));
-    if (success) clearFields();
-    popToast(success, "Withdrawal successful!", "Withdrawal failed");
-  };
+    const actions = {
+      deposit: () => deposit(n),
+      withdrawal: () => withdraw(n),
+      transfer: () => transfer(n, recipient),
+    };
 
-  const handleTransfer = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    await sleep(2000);
-    setIsLoading(false);
-    const success = transfer(Number(amount), recipient);
+    const success = actions[transactionType]();
     if (success) clearFields();
-    popToast(success, "Transfer successful!", "Transfer failed");
+    popToast(success, cfg.success, cfg.failure);
   };
 
   return (
     <div className={styles.container}>
       <Card className="min-w-[400px] max-w-[90dvh]">
         <CardHeader className="flex justify-center flex-col items-center">
-          <Tabs defaultValue={transactionType}>
+          <Tabs value={transactionType} onValueChange={(v) => setTransactionType(v as TransactionType)}>
             <TabsList className="gap-1">
-              <TabsTrigger
-                className="min-w-24"
-                value="deposit"
-                onClick={() => setTransactionType("deposit")}
-              >
-                Deposit
-              </TabsTrigger>
-              <TabsTrigger
-                className="min-w-24"
-                value="withdrawal"
-                onClick={() => setTransactionType("withdrawal")}
-              >
-                Withdrawal
-              </TabsTrigger>
-              <TabsTrigger
-                className="min-w-24"
-                value="transfer"
-                onClick={() => setTransactionType("transfer")}
-              >
-                Transfer
-              </TabsTrigger>
+              {Object.keys(CONFIG).map((type) => (
+                <TabsTrigger key={type} value={type} className="min-w-24">
+                  {type[0].toUpperCase() + type.slice(1)}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </Tabs>
         </CardHeader>
+
         <CardContent>
-          {transactionType === "deposit" ? (
-            <Card className="w-full ">
-              <CardHeader>
-                <CardTitle>Deposit Funds</CardTitle>
-              </CardHeader>
+          <Card className="w-full">
+            <CardHeader>
+              <CardTitle>{cfg.title}</CardTitle>
+            </CardHeader>
 
-              <CardContent className="min-h-[240px]">
-                <form id="deposit-form" onSubmit={handleDeposit}>
-                  <div className="flex flex-col gap-5">
-                    <div className="grid gap-2">
-                      <Label htmlFor="account">To Account</Label>
-                      <Input
-                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
-                        disabled
-                      />
-                    </div>
-
-                    <div className="grid gap-2">
-                      <Label htmlFor="amount">Amount</Label>
-                      <Input
-                        name="amount"
-                        type="text"
-                        value={amount}
-                        disabled={isLoading}
-                        onChange={(e) => 
-                          setAmount(e.target.value)
-                        }
-                        className={invalidAmount ? "border-red-500" : ""}
-                      />
-                      {invalidAmount && (
-                        <Alert
-                          className="border-none p-0"
-                          variant="destructive"
-                        >
-                          <AlertTitle>
-                            Amount must be a positive value
-                          </AlertTitle>
-                        </Alert>
-                      )}
-                    </div>
-                    <CardDescription>
-                      {Number(amount) > 0 && Number.isFinite(Number(amount))
-                        ? `Resulting Balance: ${money((user?.balance ?? 0) + Number(amount))}`
-                        : `Current Balance: ${user && money(user.balance)}`}
-                    </CardDescription>
+            <CardContent className="min-h-[240px]">
+              <form id="transaction-form" onSubmit={submit}>
+                <div className="flex flex-col gap-5">
+                  <div className="grid gap-2">
+                    <Label htmlFor="account">{cfg.accountLabel}</Label>
+                    <Input id="account" placeholder={maskedAccount} disabled />
                   </div>
-                </form>
-              </CardContent>
 
-              <CardFooter className="flex-col gap-4">
-                <Button
-                  type="submit"
-                  form="deposit-form"
-                  className="w-1/3"
-                  disabled={isLoading}
-                >
-                  {isLoading && <Spinner className="size-6" />}
-                  {isLoading ? "Depositing..." : "Deposit"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ) : transactionType === "withdrawal" ? (
-            <Card className="w-full ">
-              <CardHeader>
-                <CardTitle>Withdraw Funds</CardTitle>
-              </CardHeader>
-
-              <CardContent className="min-h-[240px]">
-                <form id="withdrawal-form" onSubmit={handleWithdrawal}>
-                  <div className="flex flex-col gap-5">
+                  {transactionType === "transfer" && (
                     <div className="grid gap-2">
-                      <Label htmlFor="from">From Account</Label>
+                      <Label htmlFor="recipient">Recipient (Username or Email)</Label>
                       <Input
-                        name="from"
-                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
+                        id="recipient"
                         type="text"
-                        disabled
-                      />
-                    </div>
-
-                    <div className="grid gap-2">
-                      <Label htmlFor="amount">Amount</Label>
-                      <Input
-                        name="amount"
-                        type="text"
-                        value={amount}
-                        disabled={isLoading}
-                        onChange={(e) => 
-                          setAmount(e.target.value)
-                        }
-                        className={invalidAmount ? "border-red-500" : ""}
-                      />
-                      {invalidAmount && (
-                        <Alert
-                          className="border-none p-0"
-                          variant="destructive"
-                        >
-                          <AlertTitle>
-                            Amount must be a positive value
-                          </AlertTitle>
-                        </Alert>
-                      )}
-                    </div>
-
-                    <CardDescription>
-                      {Number(amount) > 0 && Number.isFinite(Number(amount))
-                        ? `Resulting Balance: ${money((user?.balance ?? 0) - Number(amount))}`
-                        : `Current Balance: ${user && money(user.balance)}`}
-                    </CardDescription>
-                  </div>
-                </form>
-              </CardContent>
-
-              <CardFooter className="flex-col gap-4">
-                <Button
-                  type="submit"
-                  form="withdrawal-form"
-                  className="w-1/3"
-                  disabled={isLoading}
-                >
-                  {isLoading && <Spinner className="size-6" />}
-                  {isLoading ? "Withdrawing..." : "Withdraw"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ) : transactionType === "transfer" ? (
-            <Card className="w-full ">
-              <CardHeader>
-                <CardTitle>Transfer Funds</CardTitle>
-              </CardHeader>
-
-              <CardContent className="min-h-[240px]">
-                <form id="transfer-form" onSubmit={handleTransfer}>
-                  <div className="flex flex-col gap-5">
-                    <div className="grid gap-2">
-                      <Label htmlFor="from">From Account</Label>
-                      <Input
-                        name="from"
-                        placeholder={`•••• •••• •••• ${user?.accountNumber?.slice(-4)}`}
-                        disabled
-                      />
-                    </div>
-
-                    <div className="grid gap-2">
-                      <Label htmlFor="user">
-                        Recipient (Username or Email)
-                      </Label>
-                      <Input
                         value={recipient}
+                        disabled={isLoading}
                         onChange={(e) => setRecipient(e.target.value)}
-                        name="user"
-                        type="text"
-                        disabled={isLoading}
                       />
                     </div>
+                  )}
 
-                    <div className="grid gap-2">
-                      <Label htmlFor="amount">Amount</Label>
-                      <Input
-                        name="amount"
-                        type="text"
-                        value={amount}
-                        disabled={isLoading}
-                        onChange={(e) => 
-                          setAmount(e.target.value)
-                        }
-                        className={invalidAmount ? "border-red-500" : ""}
-                      />
-                      {invalidAmount && (
-                        <Alert
-                          className="border-none p-0"
-                          variant="destructive"
-                        >
-                          <AlertTitle>
-                            Amount must be a positive value
-                          </AlertTitle>
-                        </Alert>
-                      )}
-                    </div>
-
-                    <CardDescription>
-                      {Number(amount) > 0
-                        ? `Resulting Balance: ${money((user?.balance ?? 0) - Number(amount))}`
-                        : `Current Balance: ${user && money(user.balance)}`}
-                    </CardDescription>
+                  <div className="grid gap-2">
+                    <Label htmlFor="amount">Amount</Label>
+                    <Input
+                      id="amount"
+                      type="text"
+                      value={amount}
+                      disabled={isLoading}
+                      onChange={(e) => setAmount(e.target.value)}
+                      className={invalidAmount ? "border-red-500" : ""}
+                    />
+                    {invalidAmount && (
+                      <Alert className="border-none p-0" variant="destructive">
+                        <AlertTitle>Amount must be a positive value</AlertTitle>
+                      </Alert>
+                    )}
                   </div>
-                </form>
-              </CardContent>
 
-              <CardFooter className="flex-col gap-4">
-                <Button
-                  type="submit"
-                  form="transfer-form"
-                  className="w-1/3"
-                  disabled={isLoading}
-                >
-                  {isLoading && <Spinner className="size-6" />}
-                  {isLoading
-                    ? "Transferring"
-                    : "Transfer"}
-                </Button>
-              </CardFooter>
-            </Card>
-          ) : (
-            ""
-          )}
+                  <CardDescription>
+                    {showPreview
+                      ? `Resulting Balance: ${money(balance + cfg.sign * n)}`
+                      : `Current Balance: ${money(balance)}`}
+                  </CardDescription>
+                </div>
+              </form>
+            </CardContent>
+
+            <CardFooter className="flex-col gap-4">
+              <Button type="submit" form="transaction-form" className="w-1/3" disabled={isLoading}>
+                {isLoading && <Spinner className="size-6" />}
+                {isLoading ? cfg.busy : cfg.button}
+              </Button>
+            </CardFooter>
+          </Card>
         </CardContent>
       </Card>
     </div>
   );
 };
+
 export default Transaction;

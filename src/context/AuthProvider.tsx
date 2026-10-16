@@ -3,9 +3,8 @@ import type { User, Transaction } from "@/types/Types";
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-import { generateCardNumber, getDateFromString } from "@/utils/utils";
-import { getStringFromDate } from "@/utils/utils";
-import { isValidAmount } from "@/utils/validation";
+import { generateCardNumber, getDateFromString, getStringFromDate } from "@/utils/utils";
+import { isValidAmount, isValidEmail, isValidName, isValidPass } from "@/utils/validation";
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [users, setUsers] = useState<User[]>(db.users);
@@ -30,14 +29,10 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     return false;
   };
 
-  const logout = () => {
-    setUserId(null);
-  };
+  const logout = () => setUserId(null);
 
   const updateBalance = (id: number, newBalance: number) => {
-    setUsers((prev) =>
-      prev.map((account) => (account.id === user?.id ? { ...account, balance: newBalance } : account)),
-    );
+    setUsers((prev) => prev.map((a) => (a.id === id ? { ...a, balance: newBalance } : a)));
   };
 
   const deposit = (amount: number) => {
@@ -51,7 +46,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const balance = user ? user.balance : 0;
     if (!isValidAmount(amount, balance) || !user) return false;
     updateBalance(user.id, user.balance - amount);
-    logTransaction("withdrawal", amount, user.username);
+    logTransaction("withdrawal", amount, user.username, null);
     return true;
   };
 
@@ -78,12 +73,12 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signup = (firstName: string, lastName: string, email: string, username: string, password: string) => {
-    console.log("ran signup");
     const userExists = users.find((u: User) => u.username === username);
     if (userExists) return false;
-    // if (!isValidEmail(email)) throw new Error("Invalid email"); //todo: something wrong here
-    // if (!isValidPass(password)) throw new Error("Invalid Password"); //todoL this doesn't work either
-    // if (!isValidName(firstName) || !isValidName(lastName)) return; // throw invalid name error
+    if (!isValidEmail(email)) throw new Error("Invalid email");
+    if (!isValidPass(password)) throw new Error("Invalid password");
+    if (!isValidName(firstName)) throw new Error("Invalid first name");
+    if (!isValidName(lastName)) throw new Error("Invalid last name");
 
     const newUser: User = {
       id: Date.now(), // generate a random number to use for the id

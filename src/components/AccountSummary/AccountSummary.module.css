@@ -1,0 +1,9 @@
+.cash {
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size: 2rem;
+}
+
+.buttons {
+  display: flex;
+  gap: 0.5rem;
+}
