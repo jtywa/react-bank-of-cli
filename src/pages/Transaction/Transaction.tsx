@@ -61,6 +61,7 @@ const Transaction = () => {
   const [recipient, setRecipient] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  // Form Content
   const cfg = CONFIG[transactionType];
   const n = Number(amount);
   const invalidAmount = !!amount && !isValidAmount(amount);

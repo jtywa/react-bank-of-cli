@@ -9,6 +9,7 @@ import { useState, useEffect } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
 import { isValidEmail, isValidName, isValidPassword, isValidUsername } from "@/utils/validation";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 //todo: get email validation working
 //todo: email/username exists validation
@@ -33,9 +34,7 @@ const Login = () => {
   const [invalidPassword, setInvalidPassword] = useState(false);
   const [passwordMismatch, setPasswordMismatch] = useState(false);
 
-  useEffect(() => {
-    document.title = `${isSigningUp ? "Sign Up" : "Sign In"} | Bank of CLI`;
-  }, [isSigningUp]);
+  usePageTitle(`${isSigningUp ? "Sign Up" : "Sign In"} | Bank of CLI`);
 
   const { login, signup } = useAuth();
 

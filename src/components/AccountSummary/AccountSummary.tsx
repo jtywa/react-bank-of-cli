@@ -1,11 +1,17 @@
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "../ui/card";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "../ui/card";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import { Skeleton } from "../ui/skeleton";
 import type { User } from "../../types/Types";
 import { WalletMinimal } from "lucide-react";
 import styles from "./AccountSummary.module.css";
 import { money } from "@/utils/utils";
+import Loadable from "../Loadable/Loadable";
 
 interface AccountSummaryProps {
   user: Omit<User, "password"> | null;
@@ -17,36 +23,33 @@ const AccountSummary = ({ user, isLoading }: AccountSummaryProps) => {
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
-          {isLoading ? <Skeleton className="h-[24px]  w-[24px] rounded"></Skeleton> : <WalletMinimal />}
-          {isLoading ? (
-            <Skeleton className="h-[20px] m-[4px] w-[150px] rounded"></Skeleton>
-          ) : (
-            <span>Personal Checking</span>
-          )}
-        </CardTitle>
-        {isLoading ? (
-          <Skeleton className="h-[12px] m-[4px] w-[60px] rounded"></Skeleton>
-        ) : (
-          <CardDescription>•••• {user?.accountNumber?.slice(-4)}</CardDescription>
-        )}
-      </CardHeader>
-      <CardContent>
-        {isLoading ? (
-          <Skeleton className="h-[44px] m-[4px] w-[150px] rounded"></Skeleton>
-        ) : (
-          <div className={styles.cash}>{user && money(user.balance)}</div>
-        )}
+          <Loadable loading={isLoading} skeleton="h-[24px]  w-[24px]">
+            <WalletMinimal />
+          </Loadable>
 
-        {isLoading ? (
-          <Skeleton className="h-[16px] mb-[4px] w-[100px] rounded"></Skeleton>
-        ) : (
+          <Loadable loading={isLoading} skeleton="h-[20px] m-[4px] w-[150px]">
+            <span>Personal Checking</span>
+          </Loadable>
+        </CardTitle>
+
+        <Loadable loading={isLoading} skeleton="h-[12px] m-[4px] w-[60px]">
+          <CardDescription>
+            •••• {user?.accountNumber?.slice(-4)}
+          </CardDescription>
+        </Loadable>
+      </CardHeader>
+
+      <CardContent>
+        <Loadable loading={isLoading} skeleton="h-[44px] m-[4px] w-[150px]">
+          <div className={styles.cash}>{user && money(user.balance)}</div>
+        </Loadable>
+
+        <Loadable loading={isLoading} skeleton="h-[16px] mb-[4px] w-[100px]">
           <div className="pb-1 text-[10px]">AVAILABLE BALANCE</div>
-        )}
+        </Loadable>
 
         <div className="pt-2">
-          {isLoading ? (
-            <Skeleton className="h-[32px] w-[240px] rounded"></Skeleton>
-          ) : (
+          <Loadable loading={isLoading} skeleton="h-[32px] w-[240px] rounded">
             <div className={styles.buttons}>
               <Button variant="outline">
                 <Link to="/transaction/deposit">Deposit</Link>
@@ -58,7 +61,7 @@ const AccountSummary = ({ user, isLoading }: AccountSummaryProps) => {
                 <Link to="/transaction/transfer">Transfer</Link>
               </Button>
             </div>
-          )}
+          </Loadable>
         </div>
       </CardContent>
     </Card>

@@ -1,8 +1,7 @@
 export const generateCardNumber = (): string => {
   let result = "";
   for (let i = 0; i < 16; i++) {
-    // Generates a random digit between 0 and 9
-    result += Math.floor(Math.random() * 10);
+    result += Math.floor(Math.random() * 10); // generates integer from 1-9
   }
   return result;
 };
