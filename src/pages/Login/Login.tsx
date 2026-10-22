@@ -5,17 +5,17 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useAuth } from "@/context/AuthContext";
 import { Alert, AlertTitle } from "@/components/ui/alert";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Spinner } from "@/components/ui/spinner";
 import { popToast } from "@/lib/popToast";
-import { isValidEmail, isValidName, isValidPassword, isValidUsername } from "@/utils/validation";
+import { isValidEmail, isValidName, isValidPassword } from "@/utils/validation";
 import { usePageTitle } from "@/hooks/usePageTitle";
+import { ApiError } from "@/api";
 
 //todo: get email validation working
-//todo: email/username exists validation
+//todo: email already exists validation
 
 const Login = () => {
-  const [username, setUsername] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [confirmPassword, setConfirmPassword] = useState<string>("");
   const [isSigningUp, setIsSigningUp] = useState<boolean>(false);
@@ -23,13 +23,11 @@ const Login = () => {
   const [firstName, setFirstName] = useState<string>("");
   const [lastName, setLastName] = useState<string>("");
   const [loginFailed, setLoginFailed] = useState<boolean>(false);
-  const [signupFailed, setSignupFailed] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   // Validated Error States
   const [invalidFirst, setInvalidFirst] = useState(false);
   const [invalidLast, setInvalidLast] = useState(false);
-  const [invalidUser, setInvalidUser] = useState(false);
   const [invalidEmail, setInvalidEmail] = useState(false);
   const [invalidPassword, setInvalidPassword] = useState(false);
   const [passwordMismatch, setPasswordMismatch] = useState(false);
@@ -38,49 +36,37 @@ const Login = () => {
 
   const { login, signup } = useAuth();
 
-  const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+    const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setLoginFailed(false);
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    if (!username || !password) return; //show error
-    const success = login(username, password);
-    if (success) {
-      setUsername("")
-      setPassword("")
-    }
-    else {
+    try {
+      await login(email, password);
+      setEmail("");
+      setPassword("");
+      // TODO: Navigate to dashboard here
+    } catch (err) {
       setLoginFailed(true);
-      popToast(success, "", "Login Failed");
+      popToast(false, "", err instanceof ApiError ? err.message : "Could not reach the server");
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleSubmitSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (invalidFirst || invalidLast || invalidEmail || invalidPassword || password !== confirmPassword) return;
     setIsLoading(true);
-    await new Promise((resolve) => setTimeout(resolve, 2000));
-    setIsLoading(false);
-    // return if any fields empty or pws not matching
-    const success = signup(firstName, lastName, email, username, password);
-        if (success) {
-          setIsSigningUp(false);
-          setEmail("")
-          setUsername("")
-          setPassword("")
-          setConfirmPassword("")
-          setFirstName("")
-          setLastName("")
-          setInvalidEmail(false);
-          setInvalidPassword(false);
-          setInvalidFirst(false);
-          setInvalidLast(false);
-          setInvalidPassword(false);
-          setInvalidUser(false);
-          setPasswordMismatch(false);
-        }
-    else setSignupFailed(true);
-
-    popToast(success, "Acount Creation Successful!", "Account Creation Failed");
+    try {
+      await signup(email, firstName, lastName, password);
+      popToast(true, "Account Creation Successful!", "");
+      clearAllFields();
+      setIsSigningUp(false);
+    } catch (err) {
+      popToast(false, "", err instanceof ApiError ? err.message : "Could not reach the server");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleFormSwap = () => {
@@ -90,8 +76,6 @@ const Login = () => {
 
   const clearAllFields = () => {
     setLoginFailed(false);
-    setSignupFailed(false);
-    setUsername("");
     setPassword("");
     setEmail("");
     setFirstName("");
@@ -102,22 +86,17 @@ const Login = () => {
   const handleFirst = () => {
     if (!firstName || isValidName(firstName)) setInvalidFirst(false);
     else setInvalidFirst(true);
-  }
+  };
 
   const handleLast = () => {
-if (!lastName || isValidName(lastName)) setInvalidLast(false);
+    if (!lastName || isValidName(lastName)) setInvalidLast(false);
     else setInvalidLast(true);
-  }
+  };
 
   const handleEmail = () => {
     if (!email || isValidEmail(email)) setInvalidEmail(false);
     else setInvalidEmail(true);
-  }
-
-  const handleUser = () => {
-    if (!username || isValidUsername(username)) setInvalidUser(false);
-    else setInvalidUser(true);
-  }
+  };
 
   const handlePassword = () => {
     if (confirmPassword !== "" && password !== confirmPassword) setPasswordMismatch(true);
@@ -127,7 +106,7 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
 
     if (isValidPassword(password)) setInvalidPassword(false);
     else setInvalidPassword(true);
-  }
+  };
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
@@ -143,13 +122,13 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
             <form id="login-form" onSubmit={handleSubmitSignIn}>
               <div className="flex flex-col gap-3">
                 <div className="grid gap-2">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="email">Email</Label>
                   <Input
-                    id="username"
-                    name="username"
-                    type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    id="email"
+                    name="email"
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
                   />
@@ -172,7 +151,7 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
             </form>
 
             <Alert className="border-none px-0" variant="destructive">
-              <AlertTitle className={loginFailed ? "" : "hidden"}>Invalid username or password</AlertTitle>
+              <AlertTitle className={loginFailed ? "" : "hidden"}>Invalid email or password</AlertTitle>
             </Alert>
           </CardContent>
 
@@ -209,52 +188,13 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
           <CardContent>
             <form id="signup-form" onSubmit={handleSubmitSignUp}>
               <div className="flex flex-col gap-3">
-                {/* FIRST NAME */}
 
-                <div className="grid gap-1">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                  onBlur={handleFirst}
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidFirst ? "border-red-500" : ""}
-                  />
-                  {invalidFirst && <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>First name must be less than 24 characters and contain only letters and - (hyphen) or ' (apostrophe)</AlertTitle>
-                  </Alert>}
-                </div>
-
-                {/* LAST NAME */}
-
-                <div className="grid gap-1">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                  onBlur={handleLast}
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidLast ? "border-red-500" : ""}
-                  />
-                                    {invalidLast && <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Last name must be less than 24 characters and contain only letters and - (hyphen) or ' (apostrophe)</AlertTitle>
-                  </Alert>}
-                </div>
-
-                {/* EMAIL */}
+                 {/* EMAIL */}
 
                 <div className="grid gap-1">
                   <Label htmlFor="email">Email</Label>
                   <Input
-                  onBlur={handleEmail}
+                    onBlur={handleEmail}
                     id="email"
                     name="email"
                     type="email"
@@ -265,43 +205,68 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
                     className={invalidEmail ? "border-red-500" : ""}
                   />
                   {invalidEmail && (
-                  <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Email must be valid</AlertTitle>
-                  </Alert>
-                )}
+                    <Alert className="border-none p-0" variant="destructive">
+                      <AlertTitle>Email must be valid</AlertTitle>
+                    </Alert>
+                  )}
                 </div>
 
-
-
-                {/* USERNAME */}
+                {/* FIRST NAME */}
 
                 <div className="grid gap-1">
-                  <Label htmlFor="username">Username</Label>
+                  <Label htmlFor="firstName">First Name</Label>
                   <Input
-                  onBlur={handleUser}
-                    id="username"
-                    name="username"
+                    onBlur={handleFirst}
+                    id="firstName"
+                    name="firstName"
                     type="text"
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
+                    value={firstName}
+                    onChange={(e) => setFirstName(e.target.value)}
                     required
                     disabled={isLoading ? true : false}
-                    className={invalidUser ? "border-red-500" : ""}
+                    className={invalidFirst ? "border-red-500" : ""}
                   />
+                  {invalidFirst && (
+                    <Alert className="border-none p-0" variant="destructive">
+                      <AlertTitle>
+                        First name must be less than 24 characters and contain only letters and - (hyphen) or '
+                        (apostrophe)
+                      </AlertTitle>
+                    </Alert>
+                  )}
                 </div>
 
-                {invalidUser && (
-                  <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Username must be alphanumeric, 3-16 characters</AlertTitle>
-                  </Alert>
-                )}
+                {/* LAST NAME */}
+
+                <div className="grid gap-1">
+                  <Label htmlFor="lastName">Last Name</Label>
+                  <Input
+                    onBlur={handleLast}
+                    id="lastName"
+                    name="lastName"
+                    type="text"
+                    value={lastName}
+                    onChange={(e) => setLastName(e.target.value)}
+                    required
+                    disabled={isLoading ? true : false}
+                    className={invalidLast ? "border-red-500" : ""}
+                  />
+                  {invalidLast && (
+                    <Alert className="border-none p-0" variant="destructive">
+                      <AlertTitle>
+                        Last name must be less than 24 characters and contain only letters and - (hyphen) or '
+                        (apostrophe)
+                      </AlertTitle>
+                    </Alert>
+                  )}
+                </div>
 
                 {/* PASSWORD */}
 
                 <div className="grid gap-1">
                   <Label htmlFor="password">Password</Label>
                   <Input
-                  onBlur={handlePassword}
+                    onBlur={handlePassword}
                     id="password"
                     name="password"
                     type="password"
@@ -319,7 +284,7 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
                 <div className="grid gap-1">
                   <Label htmlFor="confirmPassword">Confirm Password</Label>
                   <Input
-                  onBlur={handlePassword}
+                    onBlur={handlePassword}
                     id="confirmPassword"
                     name="confirmPassword"
                     type="password"
@@ -339,7 +304,9 @@ if (!lastName || isValidName(lastName)) setInvalidLast(false);
 
                 {invalidPassword && (
                   <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Password must be between 8-32 characters, with letters, numbers, and the symbols !, # or _ </AlertTitle>
+                    <AlertTitle>
+                      Password must be between 8-32 characters, with letters, numbers, and the symbols !, # or _{" "}
+                    </AlertTitle>
                   </Alert>
                 )}
               </div>

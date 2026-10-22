@@ -3,7 +3,7 @@ import type { Transaction, User } from "@/types/Types";
 
 interface AuthContextType {
   user: Omit<User, "password"> | null;
-  login: (username: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<void>;
   logout: () => void;
   deposit: (amount: number) => boolean;
   withdraw: (amount: number) => boolean;
@@ -12,7 +12,7 @@ interface AuthContextType {
   setUsers: React.Dispatch<User[]>;
   transactions: Transaction[];
   setAllTransactions: React.Dispatch<Transaction[]>;
-  signup: (firstName: string, lastName: string, email: string, username: string, password: string) => boolean;
+  signup: (email: string, firstName: string, lastName: string, password: string) => Promise<void>;
   isLoggedIn: boolean;
 }
 

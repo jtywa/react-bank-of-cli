@@ -3,16 +3,46 @@ import type { User, Transaction } from "@/types/Types";
 import { useMemo, useState } from "react";
 import type { ReactNode } from "react";
 import { AuthContext } from "./AuthContext";
-import { generateCardNumber, getDateFromString, getStringFromDate } from "@/utils/utils";
-import { isValidAmount, isValidEmail, isValidName, isValidPass } from "@/utils/validation";
+import { getDateFromString, getStringFromDate } from "@/utils/utils";
+import { isValidAmount } from "@/utils/validation";
+import * as api from "@/api";
+
+function readSession(): { id: number; email: string } | null {
+  const token = api.getToken();
+  if (!token) return null;
+  try {
+    const payload = JSON.parse(atob(token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/")));
+    if (payload.exp * 1000 < Date.now()) {
+      api.clearToken();
+      return null;
+    }
+    return { id: Number(payload.sub), email: String(payload.email) };
+  } catch {
+    api.clearToken();
+    return null;
+  }
+}
+
+const MOCK_ID_OFFSET = 1_000_000;
+const sessionToUser = (s: { id: number; email: string }): User => ({
+  id: s.id + MOCK_ID_OFFSET,
+  firstName: s.email.split("@")[0],
+  lastName: "",
+  email: s.email,
+  username: s.email,
+  password: "",
+  balance: 0,
+  accountNumber: "",
+});
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-  const [users, setUsers] = useState<User[]>(db.users);
-  const [userId, setUserId] = useState<number | null>(null);
+  const [initialSession] = useState(readSession);
+  const [users, setUsers] = useState<User[]>(() =>
+    initialSession ? [...db.users, sessionToUser(initialSession)] : db.users,
+  );
+  const [userId, setUserId] = useState<number | null>(initialSession ? initialSession.id + MOCK_ID_OFFSET : null);
   const user = useMemo(() => users.find((u) => u.id === userId) ?? null, [users, userId]);
-  const [allTransactions, setAllTransactions] = useState<Transaction[]>(
-  db.transactions as Transaction[]
-);
+  const [allTransactions, setAllTransactions] = useState<Transaction[]>(db.transactions as Transaction[]);
 
   const transactions = useMemo(() => {
     if (!user) return [];
@@ -22,16 +52,23 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       .sort((a, b) => getDateFromString(b.date).getTime() - getDateFromString(a.date).getTime());
   }, [allTransactions, user]);
 
-  const login = (username: string, password: string) => {
-    const foundUser = users.find((u: User) => u.username === username && u.password === password);
-    if (foundUser) {
-      setUserId(foundUser.id);
-      return true;
-    }
-    return false;
+  const login = async (email: string, password: string) => {
+    await api.login(email, password);
+    const session = readSession();
+    if (!session) throw new Error("Login succeeded but the token could not be read.");
+    const mockUser = sessionToUser(session);
+    setUsers((prev) => (prev.some((u) => u.id === mockUser.id) ? prev : [...prev, mockUser]));
+    setUserId(mockUser.id);
   };
 
-  const logout = () => setUserId(null);
+  const logout = () => {
+    api.clearToken();
+    setUserId(null);
+  };
+
+  const signup = async (email: string, firstName: string, lastName: string, password: string) => {
+    await api.register({ firstName, lastName, email, password });
+  };
 
   const updateBalance = (id: number, newBalance: number) => {
     setUsers((prev) => prev.map((a) => (a.id === id ? { ...a, balance: newBalance } : a)));
@@ -71,30 +108,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }),
     );
     logTransaction("transfer", amount, user.username, recipient);
-    return true;
-  };
-
-  const signup = (firstName: string, lastName: string, email: string, username: string, password: string) => {
-    const userExists = users.find((u: User) => u.username === username);
-    if (userExists) return false;
-    if (!isValidEmail(email)) throw new Error("Invalid email");
-    if (!isValidPass(password)) throw new Error("Invalid password");
-    if (!isValidName(firstName)) throw new Error("Invalid first name");
-    if (!isValidName(lastName)) throw new Error("Invalid last name");
-
-    const newUser: User = {
-      id: Date.now(), // generate a random number to use for the id
-      firstName: firstName,
-      lastName: lastName,
-      email: email,
-      username: username,
-      password: password,
-      balance: 0,
-      accountNumber: generateCardNumber(),
-    };
-
-    setUsers((prev: User[]) => [...prev, newUser]);
-
     return true;
   };
 
@@ -150,5 +163,3 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     </AuthContext.Provider>
   );
 };
-
-// todo: should probably make setters for data private
