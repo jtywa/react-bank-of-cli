@@ -36,7 +36,7 @@ const Login = () => {
 
   const { login, signup } = useAuth();
 
-    const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmitSignIn = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setLoginFailed(false);
     setIsLoading(true);
@@ -81,6 +81,11 @@ const Login = () => {
     setFirstName("");
     setLastName("");
     setConfirmPassword("");
+    setInvalidFirst(false);
+    setInvalidLast(false);
+    setInvalidEmail(false);
+    setInvalidPassword(false);
+    setPasswordMismatch(false);
   };
 
   const handleFirst = () => {
@@ -109,226 +114,272 @@ const Login = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-muted/40 p-4">
-      {!isSigningUp ? (
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle className="text-center">Sign in to Bank of CLI</CardTitle>
-          </CardHeader>
+    <>
+      <div className="redbg h-10"></div>
+      <div className="flex min-h-screen items-center flex-col justify-center bg-muted/40 p-4">
+      <h1 className="text-center font-serif p-4 text-[28px] text-primary font-medium">Bank of CLI</h1>
+        <div className="h-2 redbg"></div>
+        {!isSigningUp ? (
+          <Card className="w-full max-w-sm border-t-4 border-primary rounded-t-none">
+            <CardHeader>
+              <CardTitle className="text-center text-xl font-serif">Sign in</CardTitle>
+            </CardHeader>
 
-          <Separator />
+            <Separator />
 
-          <CardContent>
-            <form id="login-form" onSubmit={handleSubmitSignIn}>
-              <div className="flex flex-col gap-3">
-                <div className="grid gap-2">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                  />
+            <CardContent>
+              <form id="login-form" onSubmit={handleSubmitSignIn}>
+                <div className="flex flex-col gap-3">
+                  <div className="grid gap-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      className="border-neutral-400 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      className="border-neutral-400 h-10 focus-visible:ring-neutral-900"
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                    />
+                  </div>
                 </div>
+              </form>
 
-                <div className="grid gap-2">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                  />
-                </div>
-              </div>
-            </form>
+              <Alert className="border-none px-0" variant="destructive">
+                <AlertTitle className={loginFailed ? "" : "hidden"}>Invalid email or password</AlertTitle>
+              </Alert>
+            </CardContent>
 
-            <Alert className="border-none px-0" variant="destructive">
-              <AlertTitle className={loginFailed ? "" : "hidden"}>Invalid email or password</AlertTitle>
-            </Alert>
-          </CardContent>
-
-          <CardFooter className="flex-col gap-4">
-            <Button type="submit" form="login-form" className="w-full" disabled={isLoading ? true : false}>
-              {isLoading && <Spinner className="size-6" />}
-              {isLoading ? "Signing in..." : "Sign in"}
-            </Button>
-
-            <div className="flex w-full items-center gap-3">
-              <div className="h-px flex-1 bg-border" />
-              <span className="text-xs text-muted-foreground">OR</span>
-              <div className="h-px flex-1 bg-border" />
-            </div>
-
-            <p className="text-sm text-muted-foreground">
-              Don't have an account?{" "}
-              <Button onClick={handleFormSwap} variant="link" disabled={isLoading ? true : false}>
-                Create an account
+            <CardFooter className="flex-col gap-4">
+              <Button
+                type="submit"
+                form="login-form"
+                className="w-full p-6 text-sm font-bold"
+                disabled={isLoading ? true : false}
+              >
+                {isLoading && <Spinner className="size-6" />}
+                {isLoading ? "Signing in..." : "Sign in"}
               </Button>
-            </p>
-          </CardFooter>
-        </Card>
-      ) : (
-        <Card className="w-full max-w-sm">
-          <CardHeader>
-            <CardTitle className="text-center">Create an account with Bank of CLI</CardTitle>
-          </CardHeader>
 
-          <Separator />
+              <div className="flex w-full items-center gap-3">
+                <div className="h-px flex-1 bg-border" />
+                <span className="text-xs">OR</span>
+                <div className="h-px flex-1 bg-border" />
+              </div>
 
-          {/* SIGN UP */}
+              <p className="text-sm">
+                Don't have an account?{" "}
+                <Button
+                  className="underline cursor-pointer"
+                  onClick={handleFormSwap}
+                  variant="link"
+                  disabled={isLoading ? true : false}
+                >
+                  Create an account
+                </Button>
+              </p>
+            </CardFooter>
+          </Card>
+        ) : (
+          <Card className="w-full max-w-sm border-t-4 border-primary rounded-t-none">
+            <CardHeader>
+              <CardTitle className="text-center text-xl font-serif">Create an account</CardTitle>
+            </CardHeader>
 
-          <CardContent>
-            <form id="signup-form" onSubmit={handleSubmitSignUp}>
-              <div className="flex flex-col gap-3">
+            <Separator />
 
-                 {/* EMAIL */}
+            {/* SIGN UP */}
 
-                <div className="grid gap-1">
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    onBlur={handleEmail}
-                    id="email"
-                    name="email"
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidEmail ? "border-red-500" : ""}
-                  />
-                  {invalidEmail && (
+            <CardContent>
+              <form id="signup-form" onSubmit={handleSubmitSignUp}>
+                <div className="flex flex-col gap-3">
+                  {/* EMAIL */}
+
+                  <div className="grid gap-1">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      onBlur={handleEmail}
+                      id="email"
+                      name="email"
+                      type="email"
+                      value={email}
+                      onChange={(e) => setEmail(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                      className={
+                        invalidEmail
+                          ? "border-red-500 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                          : "border-neutral-400 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                      }
+                    />
+                    {invalidEmail && (
+                      <Alert className="border-none p-0" variant="destructive">
+                        <AlertTitle>Email must be valid</AlertTitle>
+                      </Alert>
+                    )}
+                  </div>
+
+                  {/* FIRST NAME */}
+
+                  <div className="grid gap-1">
+                    <Label htmlFor="firstName">First Name</Label>
+                    <Input
+                      onBlur={handleFirst}
+                      id="firstName"
+                      name="firstName"
+                      type="text"
+                      value={firstName}
+                      onChange={(e) => setFirstName(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                      className={
+                        invalidFirst
+                          ? "border-red-500 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                          : "border-neutral-400 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                      }
+                    />
+                    {invalidFirst && (
+                      <Alert className="border-none p-0" variant="destructive">
+                        <AlertTitle>
+                          First name must be less than 24 characters and contain only letters and - (hyphen) or '
+                          (apostrophe)
+                        </AlertTitle>
+                      </Alert>
+                    )}
+                  </div>
+
+                  {/* LAST NAME */}
+
+                  <div className="grid gap-1">
+                    <Label htmlFor="lastName">Last Name</Label>
+                    <Input
+                      onBlur={handleLast}
+                      id="lastName"
+                      name="lastName"
+                      type="text"
+                      value={lastName}
+                      onChange={(e) => setLastName(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                      className={
+                        invalidLast
+                          ? "border-red-500 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                          : "border-neutral-400 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                      }
+                    />
+                    {invalidLast && (
+                      <Alert className="border-none p-0" variant="destructive">
+                        <AlertTitle>
+                          Last name must be less than 24 characters and contain only letters and - (hyphen) or '
+                          (apostrophe)
+                        </AlertTitle>
+                      </Alert>
+                    )}
+                  </div>
+
+                  {/* PASSWORD */}
+
+                  <div className="grid gap-1">
+                    <Label htmlFor="password">Password</Label>
+                    <Input
+                      onBlur={handlePassword}
+                      id="password"
+                      name="password"
+                      type="password"
+                      autoComplete="current-password"
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                      className={
+                        invalidPassword || passwordMismatch
+                          ? "border-red-500 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                          : "border-neutral-400 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                      }
+                    />
+                  </div>
+
+                  {/* CONFIRM PASSWORD */}
+
+                  <div className="grid gap-1">
+                    <Label htmlFor="confirmPassword">Confirm Password</Label>
+                    <Input
+                      onBlur={handlePassword}
+                      id="confirmPassword"
+                      name="confirmPassword"
+                      type="password"
+                      value={confirmPassword}
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      required
+                      disabled={isLoading ? true : false}
+                      className={
+                        invalidPassword || passwordMismatch
+                          ? "border-red-500 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                          : "border-neutral-400 h-10 dark:border-neutral-200 focus-visible:ring-neutral-900"
+                      }
+                    />
+                  </div>
+
+                  {passwordMismatch && (
                     <Alert className="border-none p-0" variant="destructive">
-                      <AlertTitle>Email must be valid</AlertTitle>
+                      <AlertTitle>Passwords do not match</AlertTitle>
                     </Alert>
                   )}
-                </div>
 
-                {/* FIRST NAME */}
-
-                <div className="grid gap-1">
-                  <Label htmlFor="firstName">First Name</Label>
-                  <Input
-                    onBlur={handleFirst}
-                    id="firstName"
-                    name="firstName"
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidFirst ? "border-red-500" : ""}
-                  />
-                  {invalidFirst && (
+                  {invalidPassword && (
                     <Alert className="border-none p-0" variant="destructive">
                       <AlertTitle>
-                        First name must be less than 24 characters and contain only letters and - (hyphen) or '
-                        (apostrophe)
+                        Password must be between 8-32 characters, with letters, numbers, and the symbols !, # or _{" "}
                       </AlertTitle>
                     </Alert>
                   )}
                 </div>
+              </form>
+            </CardContent>
 
-                {/* LAST NAME */}
-
-                <div className="grid gap-1">
-                  <Label htmlFor="lastName">Last Name</Label>
-                  <Input
-                    onBlur={handleLast}
-                    id="lastName"
-                    name="lastName"
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidLast ? "border-red-500" : ""}
-                  />
-                  {invalidLast && (
-                    <Alert className="border-none p-0" variant="destructive">
-                      <AlertTitle>
-                        Last name must be less than 24 characters and contain only letters and - (hyphen) or '
-                        (apostrophe)
-                      </AlertTitle>
-                    </Alert>
-                  )}
-                </div>
-
-                {/* PASSWORD */}
-
-                <div className="grid gap-1">
-                  <Label htmlFor="password">Password</Label>
-                  <Input
-                    onBlur={handlePassword}
-                    id="password"
-                    name="password"
-                    type="password"
-                    autoComplete="current-password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidPassword || passwordMismatch ? "border-red-500" : ""}
-                  />
-                </div>
-
-                {/* CONFIRM PASSWORD */}
-
-                <div className="grid gap-1">
-                  <Label htmlFor="confirmPassword">Confirm Password</Label>
-                  <Input
-                    onBlur={handlePassword}
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type="password"
-                    value={confirmPassword}
-                    onChange={(e) => setConfirmPassword(e.target.value)}
-                    required
-                    disabled={isLoading ? true : false}
-                    className={invalidPassword || passwordMismatch ? "border-red-500" : ""}
-                  />
-                </div>
-
-                {passwordMismatch && (
-                  <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>Passwords do not match</AlertTitle>
-                  </Alert>
-                )}
-
-                {invalidPassword && (
-                  <Alert className="border-none p-0" variant="destructive">
-                    <AlertTitle>
-                      Password must be between 8-32 characters, with letters, numbers, and the symbols !, # or _{" "}
-                    </AlertTitle>
-                  </Alert>
-                )}
-              </div>
-            </form>
-          </CardContent>
-
-          <CardFooter className="flex-col gap-4">
-            <Button type="submit" form="signup-form" className="w-full" disabled={isLoading ? true : false}>
-              {isLoading && <Spinner className="size-6" />}
-              {isLoading ? "Signing up..." : "Sign up"}
-            </Button>
-
-            <p className="text-sm text-muted-foreground">
-              Already have an account?{" "}
-              <Button onClick={handleFormSwap} variant="link" disabled={isLoading ? true : false}>
-                Sign in
+            <CardFooter className="flex-col gap-4">
+              <Button
+                type="submit"
+                form="signup-form"
+                className="w-full p-6 text-sm font-bold"
+                disabled={isLoading ? true : false}
+              >
+                {isLoading && <Spinner className="size-6" />}
+                {isLoading ? "Signing up..." : "Sign up"}
               </Button>
-            </p>
-          </CardFooter>
-        </Card>
-      )}
-    </div>
+
+              <p className="text-sm">
+                Already have an account?{" "}
+                <Button
+                  className="underline cursor-pointer"
+                  onClick={handleFormSwap}
+                  variant="link"
+                  disabled={isLoading ? true : false}
+                >
+                  Sign in
+                </Button>
+              </p>
+            </CardFooter>
+          </Card>
+        )}
+      </div>
+    </>
   );
 };
 export default Login;

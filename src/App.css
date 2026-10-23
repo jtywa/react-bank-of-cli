@@ -22,3 +22,7 @@ body {
     display: none;
   }
 }
+
+.redbg {
+  background-color: oklch(34.795% 0.12058 19.316);
+}
