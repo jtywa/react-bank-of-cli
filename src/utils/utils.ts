@@ -56,5 +56,5 @@ export const formatAmount = (cents: number) =>
 export const getDirection = (t: Transaction, currentUserEmail?: string): 1 | -1 => {
   if (t.type === "DEPOSIT") return 1;
   if (t.type === "WITHDRAWAL") return -1;
-  return t.senderAccountEmail === currentUserEmail ? -1 : 1;
+  return t.senderAccountEmail === currentUserEmail ? -1: 1;
 };

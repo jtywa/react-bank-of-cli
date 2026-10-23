@@ -13,6 +13,7 @@ import styles from "./TransactionTable.module.css";
 import { capitalize } from "@/utils/utils";
 import Loadable from "../Loadable/Loadable";
 import { formatAmount, getDirection } from "@/utils/utils";
+import { useAuth } from "@/context/AuthContext";
 
 interface TransactionTableProps {
   transactions: Transaction[];
@@ -35,6 +36,8 @@ const TransactionTable = ({
   const showPlaceholders = isLoading && transactions.length === 0;
   const rows = showPlaceholders ? placeholderRows : transactions;
 
+  const {userData} = useAuth();
+  
   return (
     <div className="min-h-[296px]">
       
@@ -57,12 +60,12 @@ const TransactionTable = ({
           )}
 
           {rows.map((t) => {
-            const direction = getDirection(t, currentUserEmail);
+            const direction = getDirection(t, userData?.email);
             const subtitle =
               t.type === "TRANSFER"
-                ? direction === -1
-                  ? `To ${t.senderAccountEmail}`
-                  : `From ${t.recipientAccountEmail}`
+                ? direction === 1
+                  ? `From ${t.senderAccountEmail}`
+                  : `To ${t.recipientAccountEmail}`
                 : "Checking";
 
             return (
@@ -133,9 +136,9 @@ const TransactionTable = ({
                     skeleton="h-[14px] w-[48px] ml-auto"
                   >
                     <span
-                      className={direction === 1 ? "text-green-800" : "text-red-800"}
+                      className={direction === -1 ? "text-red-800" : "text-green-800"}
                     >
-                      {direction === 1 ? "+" : "−"}
+                      {direction === -1 ? "-" : "+"}
                       {formatAmount(t.amountInCents)}
                     </span>
                   </Loadable>
