@@ -8,7 +8,7 @@ interface AccountSummaryProps {
   isLoading: boolean;
 }
 
-const AccountSummary = ({ userData, isLoading }: AccountSummaryProps) => {
+const AccountSummary = ({ userData }: AccountSummaryProps) => {
   return (
     <div className="border-1 border-gray bg-white">
       <div className="border-b-1 border-b-gray flex justify-between px-6 py-4 items-center">
