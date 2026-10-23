@@ -31,7 +31,6 @@ const placeholderRows: Transaction[] = Array.from({ length: 5 }, (_, i) => ({
 const TransactionTable = ({
   transactions,
   isLoading,
-  currentUserEmail,
 }: TransactionTableProps) => {
   const showPlaceholders = isLoading && transactions.length === 0;
   const rows = showPlaceholders ? placeholderRows : transactions;
