@@ -31,11 +31,11 @@ const NavBar = () => {
 
   return (
     <div>
-      <div className="redbg h-8 w-full flex justify-between px-16 items-center">
+      <div className="redbg h-8 w-full flex justify-between px-4 md:px-16 items-center">
       <div className="text-white/90 text-xs">Personal Banking</div>
       <div className="text-white/90 text-xs">{getDate()}</div>
       </div>
-      <div className={styles.NavBar}>
+      <div className={`px-2 py-2 md:px-16 py-4 ${styles.NavBar}`}>
         <Link to="/">
           <div className="no-mobile py-[2px]hover:opacity-60">
             <div className={styles.logo}>Bank of CLI</div>

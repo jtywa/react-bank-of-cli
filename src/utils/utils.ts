@@ -1,3 +1,6 @@
+import type { Transaction } from "@/api";
+
+
 export const generateCardNumber = (): string => {
   let result = "";
   for (let i = 0; i < 16; i++) {
@@ -32,8 +35,8 @@ export const capitalize = (s: string) => {
   return s;
 };
 
-export const money = (amount: string | number) => {
-  return `$${Number(amount).toFixed(2)}`;
+export const money = (amount: string | number) => { 
+  return `$${Number(amount).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`; 
 };
 
 
@@ -46,3 +49,12 @@ export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(r
 export const dollarsToCents = (amount: number) : number => {
   return amount * 100;
 }
+
+export const formatAmount = (cents: number) =>
+  (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+
+export const getDirection = (t: Transaction, currentUserEmail?: string): 1 | -1 => {
+  if (t.type === "DEPOSIT") return 1;
+  if (t.type === "WITHDRAWAL") return -1;
+  return t.senderAccountEmail === currentUserEmail ? -1 : 1;
+};

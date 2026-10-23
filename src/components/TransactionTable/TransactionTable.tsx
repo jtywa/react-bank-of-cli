@@ -10,31 +10,15 @@ import type { Transaction } from "@/api";
 import { getDateFromString, isToday } from "@/utils/utils";
 import { Badge } from "../ui/badge";
 import styles from "./TransactionTable.module.css";
-import { BanknoteArrowUp, BanknoteX, Repeat } from "lucide-react";
 import { capitalize } from "@/utils/utils";
 import Loadable from "../Loadable/Loadable";
+import { formatAmount, getDirection } from "@/utils/utils";
 
 interface TransactionTableProps {
   transactions: Transaction[];
   isLoading?: boolean;
   currentUserEmail?: string;
 }
-
-const typeConfig = {
-  DEPOSIT: { Icon: BanknoteArrowUp, color: "text-green-300" },
-  WITHDRAWAL: { Icon: BanknoteX, color: "text-red-300" },
-  TRANSFER: { Icon: Repeat, color: "text-blue-300" },
-} as const;
-
-const formatAmount = (cents: number) =>
-  (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
-
-
-const getDirection = (t: Transaction, currentUserEmail?: string): 1 | -1 => {
-  if (t.type === "DEPOSIT") return 1;
-  if (t.type === "WITHDRAWAL") return -1;
-  return t.senderAccountEmail === currentUserEmail ? -1 : 1;
-};
 
 const placeholderRows: Transaction[] = Array.from({ length: 5 }, (_, i) => ({
   id: -(i + 1),
@@ -52,59 +36,53 @@ const TransactionTable = ({
   const rows = showPlaceholders ? placeholderRows : transactions;
 
   return (
-    <div className="min-h-[340px]">
+    <div className="min-h-[296px]">
+      
       <Table>
         <TableHeader>
-          <TableRow>
-            <TableHead className="w-1/2 min-w-[160px]">TRANSACTION</TableHead>
-            <TableHead className="">DATE</TableHead>
-            <TableHead className={`${styles.notMobile} pl-6`}>STATUS</TableHead>
-            <TableHead className="text-right min-w-[180px]">AMOUNT</TableHead>
+          <TableRow className="bg-secondary">
+            <TableHead className="px-6 w-1/2 opacity-80 text-[10px]">TRANSACTION</TableHead>
+            <TableHead  className="w-1/3 opacity-80 text-[10px]">DATE</TableHead>
+            <TableHead className={`${styles.notMobile} pl-6 opacity-80 text-[10px]`}>STATUS</TableHead>
+            <TableHead className="text-right md:min-w-[180px] opacity-80 text-[10px] px-6">AMOUNT</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {!isLoading && rows.length === 0 && (
             <TableRow>
               <TableCell colSpan={4} className="text-center opacity-70">
-                No transactions yet.
+                No transactions yet
               </TableCell>
             </TableRow>
           )}
 
           {rows.map((t) => {
-            const { Icon, color } = typeConfig[t.type];
             const direction = getDirection(t, currentUserEmail);
             const subtitle =
               t.type === "TRANSFER"
                 ? direction === -1
-                  ? `To ${t.recipientAccountEmail}`
-                  : `From ${t.senderAccountEmail}`
+                  ? `To ${t.senderAccountEmail}`
+                  : `From ${t.recipientAccountEmail}`
                 : "Checking";
 
             return (
               <TableRow
-                className={!isLoading && isToday(t.timestamp) ? "opacity-60" : ""}
+                className={!isLoading && isToday(t.timestamp) ? "opacity-70" : ""}
                 key={`${t.type}-${t.id}`}
               >
-                <TableCell className="font-medium flex gap-4 items-center">
-                  <Loadable loading={isLoading} skeleton="w-[42px] h-[42px]">
-                    <div className="p-2 border-1 rounded">
-                      <Icon className={color} />
-                    </div>
-                  </Loadable>
-
+                <TableCell className="font-medium flex gap-4 items-center px-6">
                   <div>
                     <Loadable
                       loading={isLoading}
                       skeleton="w-[72px] h-[12px] my-[4px]"
                     >
-                      <div className="text-sm">{capitalize(t.type)}</div>
+                      <div className="text-xs font-bold">{capitalize(t.type)}</div>
                     </Loadable>
                     <Loadable
                       loading={isLoading}
                       skeleton="w-[64px] h-[9px] my-[2px]"
                     >
-                      <div className="text-[10px] opacity-70">{subtitle}</div>
+                      <div className="text-[10px] opacity-60">{subtitle}</div>
                     </Loadable>
                   </div>
                 </TableCell>
@@ -149,13 +127,13 @@ const TransactionTable = ({
                   </Loadable>
                 </TableCell>
 
-                <TableCell className="text-right">
+                <TableCell className="text-right px-6">
                   <Loadable
                     loading={isLoading}
                     skeleton="h-[14px] w-[48px] ml-auto"
                   >
                     <span
-                      className={direction === 1 ? "text-green-400" : "text-red-400"}
+                      className={direction === 1 ? "text-green-800" : "text-red-800"}
                     >
                       {direction === 1 ? "+" : "−"}
                       {formatAmount(t.amountInCents)}
