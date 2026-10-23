@@ -1,16 +1,6 @@
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-} from "../ui/card";
-import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import { WalletMinimal } from "lucide-react";
 import styles from "./AccountSummary.module.css";
 import { money } from "@/utils/utils";
-import Loadable from "../Loadable/Loadable";
 import type { Account } from "@/api";
 
 interface AccountSummaryProps {
@@ -20,51 +10,27 @@ interface AccountSummaryProps {
 
 const AccountSummary = ({ userData, isLoading }: AccountSummaryProps) => {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Loadable loading={isLoading} skeleton="h-[24px]  w-[24px]">
-            <WalletMinimal />
-          </Loadable>
-
-          <Loadable loading={isLoading} skeleton="h-[20px] m-[4px] w-[150px]">
-            <span>Personal Checking</span>
-          </Loadable>
-        </CardTitle>
-
-        <Loadable loading={isLoading} skeleton="h-[12px] m-[4px] w-[60px]">
-          <CardDescription>
-            •••• 7534
-          </CardDescription>
-        </Loadable>
-      </CardHeader>
-
-      <CardContent>
-        <Loadable loading={isLoading} skeleton="h-[44px] m-[4px] w-[150px]">
-          <div className={styles.cash}>{userData && money(userData.balanceInCents / 100.00)}</div>
-        </Loadable>
-
-        <Loadable loading={isLoading} skeleton="h-[16px] mb-[4px] w-[100px]">
-          <div className="pb-1 text-[10px]">AVAILABLE BALANCE</div>
-        </Loadable>
-
-        <div className="pt-2">
-          <Loadable loading={isLoading} skeleton="h-[32px] w-[240px] rounded">
-            <div className={styles.buttons}>
-              <Button variant="outline">
-                <Link to="/transaction/deposit">Deposit</Link>
-              </Button>
-              <Button variant="outline">
-                <Link to="/transaction/withdrawal">Withdrawal</Link>
-              </Button>
-              <Button variant="outline">
-                <Link to="/transaction/transfer">Transfer</Link>
-              </Button>
-            </div>
-          </Loadable>
-        </div>
-      </CardContent>
-    </Card>
+    <div className="border-1 border-gray bg-white">
+      <div className="border-b-1 border-b-gray flex justify-between px-6 py-4 items-center">
+        <div className="text-[10px] font-bold opacity-70">YOUR ACCOUNT</div>
+        <div className="text-[10px] opacity-60">Personal Checking • ending in 7534</div>
+      </div>
+      <div className="p-6">
+        <div className=" text-[10px] opacity-70">Available balance</div>
+        <div className={styles.cash}>{userData && money(userData.balanceInCents / 100.0)}</div>
+      </div>
+      <div className="flex w-full">
+        <button className="w-full p-3 text-sm text-white bg-primary cursor-pointer hover:opacity-70">
+          <Link to="/transaction/deposit">Deposit</Link>
+        </button>
+        <button className="w-full p-3 text-sm border-r-1 border-t-1 border-gray text-primary cursor-pointer hover:bg-secondary">
+          <Link to="/transaction/withdrawal">Withdrawal</Link>
+        </button>
+        <button className="w-full p-3 text-sm border-t-1 border-gray text-primary cursor-pointer hover:bg-secondary">
+          <Link to="/transaction/transfer">Transfer</Link>
+        </button>
+      </div>
+    </div>
   );
 };
 export default AccountSummary;

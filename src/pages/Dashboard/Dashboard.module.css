@@ -10,9 +10,9 @@
 .container {
   display: flex;
   width: 100%;
-  padding: 2rem;
+  padding: 2rem 4rem;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.75rem;
   height: 90dvh;
   overflow: hidden;
   scrollbar-width: none;
@@ -20,8 +20,10 @@
 
 .serif {
   font-family: Times, serif;
-  font-size: 1.5rem;
+  font-size: 2rem;
+  opacity: .9;
   font-weight: 100;
+  padding-top: 1rem;
 }
 
 .cash {

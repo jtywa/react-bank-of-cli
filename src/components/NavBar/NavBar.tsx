@@ -32,8 +32,8 @@ const NavBar = () => {
   return (
     <div>
       <div className="redbg h-8 w-full flex justify-between px-16 items-center">
-      <div className="text-white text-xs">Personal Banking</div>
-      <div className="text-white text-xs">{getDate()}</div>
+      <div className="text-white/90 text-xs">Personal Banking</div>
+      <div className="text-white/90 text-xs">{getDate()}</div>
       </div>
       <div className={styles.NavBar}>
         <Link to="/">
