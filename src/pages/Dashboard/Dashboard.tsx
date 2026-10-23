@@ -5,13 +5,17 @@ import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/componen
 import { Button } from "@/components/ui/button";
 import TransactionTable from "@/components/TransactionTable/TransactionTable";
 import { Link } from "react-router-dom";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import AccountSummary from "@/components/AccountSummary/AccountSummary";
 import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Dashboard = () => {
-  const { userData, transactions } = useAuth();
   const [isLoading] = useState(false);
+  const { transactions, userData, refreshTransactions } = useAuth();
+
+  useEffect(() => {
+    refreshTransactions();
+  }, [refreshTransactions]);
 
   usePageTitle("Dashboard");
 
@@ -30,7 +34,7 @@ const Dashboard = () => {
           <CardTitle>Your Account</CardTitle>
         </CardHeader>
         <CardContent>
-          <AccountSummary userData={userData} isLoading={isLoading}/>
+          <AccountSummary userData={userData} isLoading={isLoading} />
         </CardContent>
       </Card>
       <Card>

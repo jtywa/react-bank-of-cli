@@ -57,8 +57,8 @@ const TransactionTable = ({
         <TableHeader>
           <TableRow>
             <TableHead className="w-1/2 min-w-[160px]">TRANSACTION</TableHead>
-            <TableHead className="min-w-[200px]">DATE</TableHead>
-            <TableHead className="pl-6 min-w-[110px]">STATUS</TableHead>
+            <TableHead className="">DATE</TableHead>
+            <TableHead className={`${styles.notMobile} pl-6`}>STATUS</TableHead>
             <TableHead className="text-right min-w-[180px]">AMOUNT</TableHead>
           </TableRow>
         </TableHeader>
@@ -83,7 +83,7 @@ const TransactionTable = ({
 
             return (
               <TableRow
-                className={!isLoading && isToday(t.timestamp) ? "opacity-50" : ""}
+                className={!isLoading && isToday(t.timestamp) ? "opacity-60" : ""}
                 key={`${t.type}-${t.id}`}
               >
                 <TableCell className="font-medium flex gap-4 items-center">
@@ -133,7 +133,7 @@ const TransactionTable = ({
                   </Loadable>
                 </TableCell>
 
-                <TableCell>
+                <TableCell className={styles.notMobile}>
                   <Loadable loading={isLoading} skeleton="w-[85px] h-[34px]">
                     <span>
                       {isToday(t.timestamp) ? (

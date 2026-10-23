@@ -1,9 +1,7 @@
 
 
 @media (max-width: 768px){
-    .mobile {
-        display: auto;
-    }
+
     .notMobile {
         display: none;
     }
@@ -13,8 +11,6 @@
     .mobile {
         display: none;
     }
-    .notMobile {
-        display: auto;
-    }
+
 }
 
