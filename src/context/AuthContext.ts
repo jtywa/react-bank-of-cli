@@ -1,27 +1,23 @@
 import { createContext, useContext } from "react";
-import type { Transaction, User } from "@/types/Types";
+import type { Account } from "@/api";
+import type { Transaction } from "@/api";
 
 interface AuthContextType {
-  user: Omit<User, "password"> | null;
+  userData: Account | null;
+  transactions: Transaction[] | null;
+  isLoggedIn: boolean;
+  isInitializing: boolean;
   login: (email: string, password: string) => Promise<void>;
   logout: () => void;
-  deposit: (amount: number) => boolean;
-  withdraw: (amount: number) => boolean;
-  transfer: (amount: number, recipient: string) => boolean;
-  users: User[];
-  setUsers: React.Dispatch<User[]>;
-  transactions: Transaction[];
-  setAllTransactions: React.Dispatch<Transaction[]>;
   signup: (email: string, firstName: string, lastName: string, password: string) => Promise<void>;
-  isLoggedIn: boolean;
+  refreshUserData: () => Promise<Account>;
+  refreshTransactions: () => Promise<Transaction[]>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export const useAuth = () => {
   const context = useContext(AuthContext);
-  if (!context) {
-    throw new Error("useAuth must be used within an AuthProvider");
-  }
+  if (!context) throw new Error("useAuth must be used within an AuthProvider");
   return context;
 };

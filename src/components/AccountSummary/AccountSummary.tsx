@@ -7,18 +7,18 @@ import {
 } from "../ui/card";
 import { Button } from "../ui/button";
 import { Link } from "react-router-dom";
-import type { User } from "../../types/Types";
 import { WalletMinimal } from "lucide-react";
 import styles from "./AccountSummary.module.css";
 import { money } from "@/utils/utils";
 import Loadable from "../Loadable/Loadable";
+import type { Account } from "@/api";
 
 interface AccountSummaryProps {
-  user: Omit<User, "password"> | null;
+  userData: Account | null;
   isLoading: boolean;
 }
 
-const AccountSummary = ({ user, isLoading }: AccountSummaryProps) => {
+const AccountSummary = ({ userData, isLoading }: AccountSummaryProps) => {
   return (
     <Card>
       <CardHeader>
@@ -34,14 +34,14 @@ const AccountSummary = ({ user, isLoading }: AccountSummaryProps) => {
 
         <Loadable loading={isLoading} skeleton="h-[12px] m-[4px] w-[60px]">
           <CardDescription>
-            •••• {user?.accountNumber?.slice(-4)}
+            •••• 7534
           </CardDescription>
         </Loadable>
       </CardHeader>
 
       <CardContent>
         <Loadable loading={isLoading} skeleton="h-[44px] m-[4px] w-[150px]">
-          <div className={styles.cash}>{user && money(user.balance)}</div>
+          <div className={styles.cash}>{userData && money(userData.balanceInCents / 100.00)}</div>
         </Loadable>
 
         <Loadable loading={isLoading} skeleton="h-[16px] mb-[4px] w-[100px]">

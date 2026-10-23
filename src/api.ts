@@ -30,6 +30,14 @@ export interface Transaction {
   recipientAccountEmail?: string; // TRANSFER
 }
 
+export interface SuccessfulTransaction {
+  id: number;
+  amountInCents: number;
+  newBalanceInCents: number;
+  timestamp: string;
+  accountEmail: string;
+}
+
 export interface TransactionHistory {
   transactions: Transaction[];
 }
@@ -83,7 +91,7 @@ export async function api<T>(path: string, { method = "GET", body }: RequestOpti
 
 // Endpoints
 
-export const register = (body: RegisterRequest) => api<Account>("/accounts", { method: "POST", body });
+export const register = (body: RegisterRequest) => api<Account>("/auth/register", { method: "POST", body });
 
 export async function login(email: string, password: string): Promise<void> {
   const { token } = await api<{ token: string }>("/auth/login", {
@@ -97,13 +105,13 @@ export const logout = clearToken;
 
 export const getMe = () => api<Account>("/accounts/me");
 
-export const getTransactions = () => api<TransactionHistory>("/accounts/me/transactions");
+export const getTransactions = () => api<TransactionHistory>("/account/transactions");
 
 export const deposit = (amountInCents: number) =>
-  api<Transaction>("/accounts/me/deposits", { method: "POST", body: { amountInCents } });
+  api<SuccessfulTransaction>("/account/deposit", { method: "POST", body: { amountInCents } });
 
 export const withdraw = (amountInCents: number) =>
-  api<Transaction>("/accounts/me/withdraw", { method: "POST", body: { amountInCents } });
+  api<SuccessfulTransaction>("/account/withdraw", { method: "POST", body: { amountInCents } });
 
 export const transfer = (recipientAccountEmail: string, amountInCents: number) =>
-  api<Transaction>("/transfers", { method: "POST", body: { recipientAccountEmail, amountInCents } });
+  api<SuccessfulTransaction>("/account/transfer", { method: "POST", body: { recipientAccountEmail, amountInCents } });

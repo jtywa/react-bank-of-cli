@@ -24,9 +24,9 @@ import { useAuth } from "@/context/AuthContext";
 import { Avatar, AvatarFallback } from "../ui/avatar";
 
 const NavBar = () => {
-  const { logout, user } = useAuth();
+  const { logout, userData } = useAuth();
   const [signOutOpen, setSignOutOpen] = useState(false);
-  const initials = `${user?.firstName?.charAt(0).toUpperCase()}${user?.lastName?.charAt(0).toUpperCase()}`;
+  const initials = `${userData?.firstName?.charAt(0).toUpperCase()}${userData?.lastName?.charAt(0).toUpperCase()}`;
 
   return (
     <div className={styles.NavBar}>
@@ -70,7 +70,7 @@ const NavBar = () => {
               </Avatar>
               <div className="no-mobile">
                 <div className="font-bold text-left text-xs">
-                  {`${user && capitalize(user.firstName)} ${user?.lastName?.charAt(0).toUpperCase()}.`}
+                  {`${userData && capitalize(userData.firstName)} ${userData?.lastName?.charAt(0).toUpperCase()}.`}
                 </div>
                 <div className="text-xs opacity-60">Personal Account</div>
               </div>

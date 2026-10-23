@@ -8,11 +8,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { useAuth } from "@/context/AuthContext";
-import { popToast } from "@/lib/popToast";
-import { money, sleep } from "@/utils/utils";
+//import { popToast } from "@/lib/popToast";
+import { money } from "@/utils/utils";
 import { isValidAmount } from "@/utils/validation";
 import { usePageTitle } from "@/hooks/usePageTitle";
 import styles from "./Transaction.module.css";
+import { ApiError, deposit, withdraw, transfer } from "@/api";
+import { dollarsToCents } from "@/utils/utils";
+import { popToast } from "@/lib/popToast";
 
 const CONFIG = {
   deposit: {
@@ -52,7 +55,6 @@ const Transaction = () => {
   usePageTitle("New Transaction");
 
   const { chosenType } = useParams();
-  const { user, deposit, withdraw, transfer } = useAuth();
 
   const [transactionType, setTransactionType] = useState<TransactionType>(
     isTransactionType(chosenType) ? chosenType : "deposit",
@@ -60,36 +62,41 @@ const Transaction = () => {
   const [amount, setAmount] = useState("");
   const [recipient, setRecipient] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const { userData, refreshUserData } = useAuth();
 
   // Form Content
   const cfg = CONFIG[transactionType];
   const n = Number(amount);
   const invalidAmount = !!amount && !isValidAmount(amount);
   const showPreview = n > 0 && Number.isFinite(n);
-  const balance = user?.balance ?? 0;
-  const maskedAccount = `•••• •••• •••• ${user?.accountNumber?.slice(-4)}`;
+  const balance = (userData?.balanceInCents ?? 0) / 100;
+  const maskedAccount = `•••• •••• •••• 7534`;
 
   const clearFields = () => {
     setAmount("");
     setRecipient("");
   };
 
-  const submit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setIsLoading(true);
-    await sleep(2000);
+const submit = async (e: React.FormEvent<HTMLFormElement>) => {
+  e.preventDefault();
+  if (!isValidAmount(amount)) return;
+
+  setIsLoading(true);
+  try {
+    const cents = dollarsToCents(n);
+    if (transactionType === "deposit") await deposit(cents);
+    else if (transactionType === "withdrawal") await withdraw(cents);
+    else await transfer(recipient.trim(), cents);
+
+    await refreshUserData().catch(() => {}); // the transaction succeeded even if this refresh fails
+    clearFields();
+    popToast(true, cfg.success, "");
+  } catch (err) {
+    popToast(false, "", err instanceof ApiError ? err.message : cfg.failure);
+  } finally {
     setIsLoading(false);
-
-    const actions = {
-      deposit: () => deposit(n),
-      withdrawal: () => withdraw(n),
-      transfer: () => transfer(n, recipient),
-    };
-
-    const success = actions[transactionType]();
-    if (success) clearFields();
-    popToast(success, cfg.success, cfg.failure);
-  };
+  }
+};
 
   return (
     <div className={styles.container}>

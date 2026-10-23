@@ -5,20 +5,15 @@ import { Card, CardHeader, CardTitle, CardContent, CardAction } from "@/componen
 import { Button } from "@/components/ui/button";
 import TransactionTable from "@/components/TransactionTable/TransactionTable";
 import { Link } from "react-router-dom";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import AccountSummary from "@/components/AccountSummary/AccountSummary";
+import { usePageTitle } from "@/hooks/usePageTitle";
 
 const Dashboard = () => {
-  const { user, transactions } = useAuth();
-  const [isLoading, setIsLoading] = useState(true);
+  const { userData, transactions } = useAuth();
+  const [isLoading] = useState(false);
 
-  useEffect(() => {
-    document.title = "Dashboard | Bank of CLI";
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, []);
+  usePageTitle("Dashboard");
 
   return (
     <div className={styles.container}>
@@ -26,7 +21,7 @@ const Dashboard = () => {
         <CardHeader></CardHeader>
         <CardContent className="flex flex-col gap-2">
           <div className="text-[10px] opacity-50">{getDate().toUpperCase()}</div>
-          <div className={styles.serif}>Welcome back, {user && capitalize(user.firstName)}.</div>
+          <div className={styles.serif}>Welcome back, {userData && capitalize(userData.firstName)}.</div>
         </CardContent>
       </Card>
 
@@ -35,7 +30,7 @@ const Dashboard = () => {
           <CardTitle>Your Account</CardTitle>
         </CardHeader>
         <CardContent>
-          <AccountSummary user={user} isLoading={isLoading} />
+          <AccountSummary userData={userData} isLoading={isLoading}/>
         </CardContent>
       </Card>
       <Card>
@@ -48,7 +43,7 @@ const Dashboard = () => {
           </CardAction>
         </CardHeader>
         <CardContent>
-          <TransactionTable isLoading={isLoading} transactions={transactions.slice(0, 5)} />
+          {transactions && <TransactionTable isLoading={isLoading} transactions={transactions.slice(0, 5)} />}
         </CardContent>
       </Card>
     </div>

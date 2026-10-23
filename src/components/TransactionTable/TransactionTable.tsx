@@ -6,13 +6,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import type { Transaction } from "@/types/Types";
+import type { Transaction } from "@/api";
 import { getDateFromString, isToday } from "@/utils/utils";
 import { Badge } from "../ui/badge";
 import styles from "./TransactionTable.module.css";
 import { BanknoteArrowUp, BanknoteX, Repeat } from "lucide-react";
 import { capitalize } from "@/utils/utils";
-import { useAuth } from "@/context/AuthContext";
 import Loadable from "../Loadable/Loadable";
 
 // TODO: add + and -, color to deposit and withdrawal amounts
@@ -23,16 +22,15 @@ interface TransactionTableProps {
 }
 
 const typeConfig = {
-  deposit: { Icon: BanknoteArrowUp, color: "text-green-300" },
-  withdrawal: { Icon: BanknoteX, color: "text-red-300" },
-  transfer: { Icon: Repeat, color: "text-blue-300" },
+  DEPOSIT: { Icon: BanknoteArrowUp, color: "text-green-300" },
+  WITHDRAWAL: { Icon: BanknoteX, color: "text-red-300" },
+  TRANSFER: { Icon: Repeat, color: "text-blue-300" },
 } as const;
 
 const TransactionTable = ({
   transactions,
   isLoading,
 }: TransactionTableProps) => {
-  const { user } = useAuth();
 
   return (
     <div className="min-h-[340px]">
@@ -50,7 +48,7 @@ const TransactionTable = ({
             const { Icon, color } = typeConfig[t.type];
             return (
               <TableRow
-                className={isToday(t.date) ? "opacity-50" : ""}
+                className={isToday(t.timestamp) ? "opacity-50" : ""}
                 key={t.id}
               >
                 <TableCell className="font-medium flex gap-4 items-center">
@@ -72,7 +70,7 @@ const TransactionTable = ({
                       skeleton="w-[64px] h-[9px] my-[2px]"
                     >
                       <div className="text-[10px] opacity-70">
-                        Checking • {user?.accountNumber?.slice(-4)}
+                        Checking • 4735
                       </div>
                     </Loadable>
                   </div>
@@ -80,7 +78,7 @@ const TransactionTable = ({
                 <TableCell className={styles.notMobile}>
                   <Loadable loading={isLoading} skeleton="w-[155px] h-[14px]">
                     <span>
-                      {getDateFromString(t.date).toLocaleDateString("en-US", {
+                      {getDateFromString(t.timestamp).toLocaleDateString("en-US", {
                         weekday: "long",
                         year: "numeric",
                         month: "long",
@@ -90,7 +88,7 @@ const TransactionTable = ({
                   </Loadable>
                 </TableCell>
                 <TableCell className={styles.mobile}>
-                  {getDateFromString(t.date).toLocaleDateString("en-US", {
+                  {getDateFromString(t.timestamp).toLocaleDateString("en-US", {
                     month: "short",
                     day: "numeric",
                   })}
@@ -98,7 +96,7 @@ const TransactionTable = ({
                 <TableCell>
                   <Loadable loading={isLoading} skeleton="w-[85px] h-[34px]">
                     <span>
-                      {isToday(t.date) ? (
+                      {isToday(t.timestamp) ? (
                         <Badge className="p-4" variant="ghost">
                           Pending
                         </Badge>
@@ -115,7 +113,7 @@ const TransactionTable = ({
                     loading={isLoading}
                     skeleton="h-[14px] w-[48px] ml-auto"
                   >
-                    <span>${t.amount.toFixed(2)}</span>
+                    <span>${(t.amountInCents * 100.00).toFixed(2)}</span>
                   </Loadable>
                 </TableCell>
               </TableRow>
