@@ -17,6 +17,7 @@ import { ApiError, deposit, withdraw, transfer } from "@/api";
 import { dollarsToCents } from "@/utils/utils";
 import { popToast } from "@/lib/popToast";
 
+
 const CONFIG = {
   deposit: {
     title: "Deposit Funds",
@@ -129,7 +130,7 @@ const submit = async (e: React.FormEvent<HTMLFormElement>) => {
 
                   {transactionType === "transfer" && (
                     <div className="grid gap-2">
-                      <Label htmlFor="recipient">Recipient (Username or Email)</Label>
+                      <Label htmlFor="recipient">Recipient Email</Label>
                       <Input
                         id="recipient"
                         type="text"

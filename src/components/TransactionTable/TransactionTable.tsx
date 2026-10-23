@@ -14,11 +14,10 @@ import { BanknoteArrowUp, BanknoteX, Repeat } from "lucide-react";
 import { capitalize } from "@/utils/utils";
 import Loadable from "../Loadable/Loadable";
 
-// TODO: add + and -, color to deposit and withdrawal amounts
-
 interface TransactionTableProps {
   transactions: Transaction[];
   isLoading?: boolean;
+  currentUserEmail?: string;
 }
 
 const typeConfig = {
@@ -27,10 +26,30 @@ const typeConfig = {
   TRANSFER: { Icon: Repeat, color: "text-blue-300" },
 } as const;
 
+const formatAmount = (cents: number) =>
+  (cents / 100).toLocaleString("en-US", { style: "currency", currency: "USD" });
+
+
+const getDirection = (t: Transaction, currentUserEmail?: string): 1 | -1 => {
+  if (t.type === "DEPOSIT") return 1;
+  if (t.type === "WITHDRAWAL") return -1;
+  return t.senderAccountEmail === currentUserEmail ? -1 : 1;
+};
+
+const placeholderRows: Transaction[] = Array.from({ length: 5 }, (_, i) => ({
+  id: -(i + 1),
+  type: "DEPOSIT",
+  amountInCents: 0,
+  timestamp: new Date().toISOString(),
+}));
+
 const TransactionTable = ({
   transactions,
   isLoading,
+  currentUserEmail,
 }: TransactionTableProps) => {
+  const showPlaceholders = isLoading && transactions.length === 0;
+  const rows = showPlaceholders ? placeholderRows : transactions;
 
   return (
     <div className="min-h-[340px]">
@@ -44,12 +63,28 @@ const TransactionTable = ({
           </TableRow>
         </TableHeader>
         <TableBody>
-          {transactions.map((t) => {
+          {!isLoading && rows.length === 0 && (
+            <TableRow>
+              <TableCell colSpan={4} className="text-center opacity-70">
+                No transactions yet.
+              </TableCell>
+            </TableRow>
+          )}
+
+          {rows.map((t) => {
             const { Icon, color } = typeConfig[t.type];
+            const direction = getDirection(t, currentUserEmail);
+            const subtitle =
+              t.type === "TRANSFER"
+                ? direction === -1
+                  ? `To ${t.recipientAccountEmail}`
+                  : `From ${t.senderAccountEmail}`
+                : "Checking";
+
             return (
               <TableRow
-                className={isToday(t.timestamp) ? "opacity-50" : ""}
-                key={t.id}
+                className={!isLoading && isToday(t.timestamp) ? "opacity-50" : ""}
+                key={`${t.type}-${t.id}`}
               >
                 <TableCell className="font-medium flex gap-4 items-center">
                   <Loadable loading={isLoading} skeleton="w-[42px] h-[42px]">
@@ -69,12 +104,11 @@ const TransactionTable = ({
                       loading={isLoading}
                       skeleton="w-[64px] h-[9px] my-[2px]"
                     >
-                      <div className="text-[10px] opacity-70">
-                        Checking • 4735
-                      </div>
+                      <div className="text-[10px] opacity-70">{subtitle}</div>
                     </Loadable>
                   </div>
                 </TableCell>
+
                 <TableCell className={styles.notMobile}>
                   <Loadable loading={isLoading} skeleton="w-[155px] h-[14px]">
                     <span>
@@ -87,12 +121,18 @@ const TransactionTable = ({
                     </span>
                   </Loadable>
                 </TableCell>
+
                 <TableCell className={styles.mobile}>
-                  {getDateFromString(t.timestamp).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                  })}
+                  <Loadable loading={isLoading} skeleton="w-[60px] h-[14px]">
+                    <span>
+                      {getDateFromString(t.timestamp).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                      })}
+                    </span>
+                  </Loadable>
                 </TableCell>
+
                 <TableCell>
                   <Loadable loading={isLoading} skeleton="w-[85px] h-[34px]">
                     <span>
@@ -108,12 +148,18 @@ const TransactionTable = ({
                     </span>
                   </Loadable>
                 </TableCell>
+
                 <TableCell className="text-right">
                   <Loadable
                     loading={isLoading}
                     skeleton="h-[14px] w-[48px] ml-auto"
                   >
-                    <span>${(t.amountInCents * 100.00).toFixed(2)}</span>
+                    <span
+                      className={direction === 1 ? "text-green-400" : "text-red-400"}
+                    >
+                      {direction === 1 ? "+" : "−"}
+                      {formatAmount(t.amountInCents)}
+                    </span>
                   </Loadable>
                 </TableCell>
               </TableRow>

@@ -25,13 +25,10 @@ export const getStringFromDate = (date: Date) => {
   return string;
 };
 
-export const getDateFromString = (s: string) => {
-  const [year, month, day] = s.split("-").map(Number);
-  return new Date(year, month - 1, day);
-};
+export const getDateFromString = (s: string) => new Date(s);
 
 export const capitalize = (s: string) => {
-  s = s.charAt(0).toUpperCase() + s.slice(1);
+  s = s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
   return s;
 };
 
@@ -41,11 +38,8 @@ export const money = (amount: string | number) => {
 
 
 
-export const isToday = (date: string) => {
-  console.log(date);
-  console.log(getStringFromDate(new Date()));
-  return date === getStringFromDate(new Date());
-};
+export const isToday = (s: string) =>
+  new Date(s).toDateString() === new Date().toDateString();
 
 export const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
